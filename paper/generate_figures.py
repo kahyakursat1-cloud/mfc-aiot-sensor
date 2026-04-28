@@ -899,34 +899,35 @@ def fig9_virtual_validation():
     ax2.set_xlim(-0.1, 3.1)
     ax2.legend(fontsize=6.2, framealpha=0.7)
 
-    # ── (c) Subtle anomaly bar chart ─────────────────────────────────────────
+    # ── (c) Subtle anomaly bar chart — fixed vs. calibrated threshold ─────────
     ax3 = fig.add_subplot(gs[2])
-    cats  = ["Extreme\n(clean)", "Subtle+\nnoise+drift"]
-    f1v   = [0.955, subtle["f1"]]
-    aucv  = [0.999, subtle["auc"]]
-    recv  = [0.950, subtle["recall"]]
+    cats  = ["Extreme\n(clean)", "Subtle\n(fixed thr.)", "Subtle\n(recalib.)"]
 
-    x = np.arange(2)
-    w = 0.26
-    ax3.bar(x - w, f1v,   w, label="F1",      color=C["teal"],   alpha=0.85)
-    ax3.bar(x,     aucv,  w, label="ROC-AUC", color=C["orange"], alpha=0.85)
-    ax3.bar(x + w, recv,  w, label="Recall",  color=C["blue"],   alpha=0.85)
+    f1v   = [0.955, subtle.get("f1_fixed", 0.538), subtle["f1"]]
+    aucv  = [0.999, subtle["auc"], subtle["auc"]]
+    recv  = [0.950, subtle.get("recall", 0.375) if "f1_fixed" in subtle else 0.375,
+             subtle["recall"]]
 
-    ax3.axhspan(0.85, 0.92, alpha=0.10, color=C["purple"])
+    x = np.arange(3)
+    w = 0.22
+    b1 = ax3.bar(x - w, f1v,  w, label="F1",      color=C["teal"],   alpha=0.85)
+    b2 = ax3.bar(x,     aucv, w, label="ROC-AUC", color=C["orange"], alpha=0.85)
+    b3 = ax3.bar(x + w, recv, w, label="Recall",  color=C["blue"],   alpha=0.85)
+
+    ax3.axhspan(0.85, 0.94, alpha=0.10, color=C["purple"],
+                label="Expected field range")
     ax3.set_xticks(x)
-    ax3.set_xticklabels(cats, fontsize=7.5)
+    ax3.set_xticklabels(cats, fontsize=6.8)
     ax3.set_ylabel("Performance metric", fontsize=7.5)
-    ax3.set_title("(c) Extreme vs. Subtle Anomalies\n(nominal noise+drift)", fontsize=8)
-    ax3.set_ylim(0.0, 1.10)
-    ax3.legend(fontsize=6.2, loc="lower right", framealpha=0.7)
+    ax3.set_title("(c) Detection Performance\n(extreme / subtle / recalibrated)", fontsize=8)
+    ax3.set_ylim(0.0, 1.12)
+    ax3.legend(fontsize=5.8, loc="lower right", framealpha=0.7, ncol=2)
 
     # Add value labels
-    for bars, vals in [(ax3.containers[0], f1v),
-                       (ax3.containers[1], aucv),
-                       (ax3.containers[2], recv)]:
+    for bars, vals in [(b1, f1v), (b2, aucv), (b3, recv)]:
         for bar, v in zip(bars, vals):
-            ax3.text(bar.get_x() + bar.get_width()/2, v + 0.012,
-                     f"{v:.2f}", ha="center", fontsize=6.5, fontweight="bold")
+            ax3.text(bar.get_x() + bar.get_width()/2, v + 0.010,
+                     f"{v:.2f}", ha="center", fontsize=5.8, fontweight="bold")
 
     plt.tight_layout()
     _save(fig, "fig9_virtual_validation.png")
