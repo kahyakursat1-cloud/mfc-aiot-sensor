@@ -281,7 +281,7 @@ def build():
         "This paper presents a simulation-based framework -- not a physical prototype -- "
         "for a self-powered Artificial Intelligence of Things (AIoT) environmental sensor "
         "node driven by soil-based microbial fuel cell (MFC) energy harvesting; all "
-        "parameters are calibrated exclusively from peer-reviewed literature. The system "
+        "MFC electrical parameters are calibrated from peer-reviewed experimental literature. The system "
         "integrates an MFC (0.3-0.8 V OCV), a 1 F supercapacitor, an ESP32 in 10-minute "
         "deep-sleep duty cycles, a LoRa Ra-02 433 MHz link, an Isolation Forest (Liu et al., "
         "2008) for unsupervised anomaly detection, and a Random Forest classifier for "
@@ -597,17 +597,19 @@ def build():
         "to transmit regardless of SoC."
     )
     pdf.body(
-        "It is important to note that the RF classifier is intentionally designed to approximate "
-        "these rule-based decision boundaries under realistic noisy conditions (sensor noise, "
-        "MFC voltage fluctuations, ADC quantisation errors) rather than to discover novel "
-        "decision logic. The advantage of the ML model over a hard-coded rule is threefold: "
-        "(1) it generalises across noisy SoC estimates where fixed thresholds would oscillate; "
-        "(2) it enables smooth transitions between action states, reducing unnecessary mode "
-        "switching; and (3) it provides a natural extension point for future reinforcement "
-        "learning or online adaptation, where the model could learn improved policies from "
-        "real deployment data without firmware changes. On-device inference on ESP32 requires "
-        "~12 ms latency and ~45 KB RAM for the serialised model, well within the 520 KB SRAM "
-        "budget."
+        "The RF classifier is intentionally designed to reproduce the deterministic rule-based "
+        "decision boundaries rather than to discover novel decision logic. A quantitative "
+        "validation confirms this design intent: the trained model achieves 99.73% rule "
+        "reproduction accuracy on a held-out uniform sample (Table 4), and under simulated "
+        "SoC measurement noise (sigma = 0.05 Gaussian), RF and rule-based policies produce "
+        "statistically equivalent energy consumption (0.574 mJ/cycle each) and equivalent "
+        "oscillation rates (0.422 vs. 0.423). The advantage of the ML representation over "
+        "a hard-coded rule is therefore architectural rather than immediately numerical: "
+        "(1) the trained model can be updated via over-the-air (OTA) file delivery without "
+        "firmware recompilation, enabling policy adaptation from real field data; and "
+        "(2) it provides a natural extension point for future reinforcement learning or online "
+        "adaptation. On-device inference on ESP32 requires ~12 ms latency and ~45 KB RAM "
+        "for the serialised model, well within the 520 KB SRAM budget."
     )
     pdf.h2("3.6.3. Training and Validation Methodology")
     pdf.body(
@@ -811,6 +813,44 @@ def build():
             "(a) action distribution; (b) capacitor SoC evolution; "
             "(c) transmission and anomaly alert counts.")
 
+    pdf.h2("4.5.1. RF vs. Rule-Based Quantitative Comparison")
+    pdf.body(
+        "Table 4 presents the quantitative comparison between the RF decision model and the "
+        "equivalent deterministic rule-based policy under increasing SoC measurement noise "
+        "(sigma = 0, 0.05, 0.10 Gaussian), using 2000 simulated duty cycles (seed = 42)."
+    )
+    # ── TABLE 4: RF vs Rule ─────────────────────────────────────────────────
+    pdf.set_font("Helvetica", "B", 9)
+    pdf.cell(0, 7, "Table 4. RF Model vs. Rule-Based Decision Logic Under SoC Measurement Noise",
+             new_x="LMARGIN", new_y="NEXT")
+    pdf.set_font("Helvetica", size=8.5)
+    t4col = [68, 28, 28, 36]
+    t4headers = ["Metric", "Noise s=0", "Noise s=0.05", "Noise s=0.10"]
+    pdf.set_fill_color(230, 240, 235)
+    for w, h in zip(t4col, t4headers):
+        pdf.cell(w, 6, h, border=1, fill=True)
+    pdf.ln()
+    t4rows = [
+        ("Rule avg. energy/cycle (mJ)",     "0.611", "0.574", "0.534"),
+        ("RF avg. energy/cycle (mJ)",        "0.611", "0.574", "0.534"),
+        ("Rule oscillation rate",            "0.455", "0.422", "0.474"),
+        ("RF oscillation rate",              "0.446", "0.423", "0.474"),
+        ("RF rule-reproduction accuracy",    "99.73%","99.73%","99.73%"),
+        ("Both vs. always-transmit saving",  "+22%",  "+27%",  "+32%"),
+    ]
+    for r in t4rows:
+        for w, val in zip(t4col, r):
+            pdf.cell(w, 5.5, val, border=1)
+        pdf.ln()
+    pdf.set_font("Helvetica", "I", 7.5)
+    pdf.multi_cell(0, 4.5,
+        "RF and rule-based policies produce statistically equivalent energy and oscillation metrics "
+        "under all tested noise levels, confirming that the RF faithfully approximates the intended "
+        "rule (99.73% reproduction accuracy). The advantage of the ML representation is architectural: "
+        "policy updates via OTA file delivery without firmware recompilation.")
+    pdf.set_font("Helvetica", size=10)
+    pdf.ln(2)
+
     pdf.h2("4.6. Duty-Cycle Sensitivity Analysis")
     pdf.body(
         "To address the question of whether the 10-minute duty cycle is optimal, Figure 8 "
@@ -944,9 +984,11 @@ def build():
     pdf.body(
         "Literature-Based Cross-Validation: All MFC electrical parameters (E_emf, R_int, "
         "substrate kinetics) are drawn from independent peer-reviewed experimental studies "
-        "[1,3,5,6,11]. Simulated OCV trajectories are compared against the experimental "
-        "voltage-time curves reported by Zhang et al. [11] for terrestrial MFCs, showing "
-        "agreement within 12% across 48-hour operation windows.",
+        "[1,3,5,6,11]. Simulated OCV trajectories follow the qualitative patterns reported "
+        "by Zhang et al. [11] for terrestrial MFCs -- an initial high-voltage phase followed "
+        "by gradual substrate depletion -- consistent with the Nernst-Monod model assumptions. "
+        "Quantitative point-by-point comparison is not performed as the original experimental "
+        "data were not available in tabulated form.",
         indent=5
     )
     pdf.body(
@@ -1100,8 +1142,10 @@ def build():
     pdf.body(
         "Estimated deployment cost: 16 nodes x $40 BOM + 1 gateway (~$80) + installation "
         "labour = approximately $800 total, with zero recurring energy or battery replacement "
-        "costs. This compares favourably with commercial agricultural sensor networks costing "
-        "$2,000-5,000 for equivalent coverage with battery-dependent nodes."
+        "costs. Battery-dependent commercial sensor nodes of equivalent capability typically "
+        "carry additional per-node recurring costs for battery servicing, maintenance, and "
+        "connectivity subscriptions [21], providing a total-cost-of-ownership advantage for "
+        "the proposed battery-free architecture that grows with deployment scale and duration."
     )
 
     # ── SECTION 6: CONCLUSIONS ───────────────────────────────────────────────
@@ -1162,7 +1206,7 @@ def build():
     pdf.set_font("Helvetica", size=9.5)
     pdf.multi_cell(0, 5.5,
         "All simulation code, firmware, and dashboard source files are openly available at "
-        "https://github.com/kahyakursat1/mfc-aiot-sensor (accessed 28 April 2026). "
+        "https://github.com/kahyakursat1-cloud/mfc-aiot-sensor (accessed 28 April 2026). "
         "Data generated during this study are contained within the paper.")
     pdf.ln(2)
 
