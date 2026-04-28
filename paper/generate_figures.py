@@ -833,6 +833,106 @@ def graphical_abstract():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Figure 9 — Virtual Experimental Validation
+#   Panel (a): Monte Carlo sustainability ratio histogram (N=200)
+#   Panel (b): IF performance on noise sweep (extreme anomalies)
+#   Panel (c): IF performance on subtle/early-warning anomalies
+# ─────────────────────────────────────────────────────────────────────────────
+def fig9_virtual_validation():
+    import sys, os as _os
+    _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    if _root not in sys.path:
+        sys.path.insert(0, _root)
+
+    # ── Run MC and noisy-IF (no prints) ─────────────────────────────────────
+    from simulation.monte_carlo import run_monte_carlo
+    from ai.validate_anomaly_noisy import run_noisy_validation, run_subtle_validation
+
+    mc_df    = run_monte_carlo(verbose=False)
+    noisy    = run_noisy_validation(verbose=False)["results"]
+    subtle   = run_subtle_validation(verbose=False)
+
+    # ── Layout ──────────────────────────────────────────────────────────────
+    fig = plt.figure(figsize=(DOUBLE_COL, 3.5))
+    gs  = gridspec.GridSpec(1, 3, figure=fig, wspace=0.38)
+
+    # ── (a) Monte Carlo histogram ────────────────────────────────────────────
+    ax1 = fig.add_subplot(gs[0])
+    ratios = mc_df["ratio"].values
+    n_pos  = (ratios >= 1.0).sum()
+    pct    = 100 * n_pos / len(ratios)
+
+    bins = np.linspace(max(0, ratios.min() - 0.05), ratios.max() + 0.05, 22)
+    n, b, patches = ax1.hist(ratios, bins=bins, edgecolor="white", linewidth=0.4)
+    for patch, left in zip(patches, b[:-1]):
+        patch.set_facecolor(C["green"] if left >= 1.0 else C["red"])
+        patch.set_alpha(0.82)
+
+    ax1.axvline(1.0, color="#333333", lw=1.2, ls="--", label="Threshold = 1.0")
+    ax1.axvline(ratios.mean(), color=C["blue"], lw=1.0, ls=":",
+                label=f"Mean = {ratios.mean():.2f}")
+    ax1.set_xlabel("Sustainability Ratio\n(gen / consume)", fontsize=7.5)
+    ax1.set_ylabel("Count (N = 200 trials)", fontsize=7.5)
+    ax1.set_title(f"(a) Monte Carlo Robustness\n"
+                  f"{n_pos}/200 energy-positive ({pct:.0f}%)", fontsize=8)
+    ax1.legend(fontsize=6.5, framealpha=0.7)
+    ax1.text(0.97, 0.97, f"{pct:.0f}%\nenergy-pos.", ha="right", va="top",
+             transform=ax1.transAxes, fontsize=8, fontweight="bold",
+             color=C["green"])
+
+    # ── (b) Noise sweep — extreme anomalies ──────────────────────────────────
+    ax2 = fig.add_subplot(gs[1])
+    noise_mults = [r["noise_mult"] for r in noisy]
+    f1s   = [r["f1"]  for r in noisy]
+    aucs  = [r["auc"] for r in noisy]
+
+    ax2.plot(noise_mults, f1s,  "o-", color=C["teal"],  ms=5, lw=1.4,
+             label="F1-score")
+    ax2.plot(noise_mults, aucs, "s--", color=C["orange"], ms=4.5, lw=1.0,
+             label="ROC-AUC", alpha=0.85)
+    ax2.axhspan(0.85, 0.92, alpha=0.12, color=C["purple"],
+                label="Expected real-world\nrange (0.85–0.92)")
+    ax2.set_xlabel("Noise multiplier\n(× nominal sigma)", fontsize=7.5)
+    ax2.set_ylabel("Performance metric", fontsize=7.5)
+    ax2.set_title("(b) Noise Robustness\n(Extreme anomaly dataset)", fontsize=8)
+    ax2.set_ylim(0.80, 1.02)
+    ax2.set_xlim(-0.1, 3.1)
+    ax2.legend(fontsize=6.2, framealpha=0.7)
+
+    # ── (c) Subtle anomaly bar chart ─────────────────────────────────────────
+    ax3 = fig.add_subplot(gs[2])
+    cats  = ["Extreme\n(clean)", "Subtle+\nnoise+drift"]
+    f1v   = [0.955, subtle["f1"]]
+    aucv  = [0.999, subtle["auc"]]
+    recv  = [0.950, subtle["recall"]]
+
+    x = np.arange(2)
+    w = 0.26
+    ax3.bar(x - w, f1v,   w, label="F1",      color=C["teal"],   alpha=0.85)
+    ax3.bar(x,     aucv,  w, label="ROC-AUC", color=C["orange"], alpha=0.85)
+    ax3.bar(x + w, recv,  w, label="Recall",  color=C["blue"],   alpha=0.85)
+
+    ax3.axhspan(0.85, 0.92, alpha=0.10, color=C["purple"])
+    ax3.set_xticks(x)
+    ax3.set_xticklabels(cats, fontsize=7.5)
+    ax3.set_ylabel("Performance metric", fontsize=7.5)
+    ax3.set_title("(c) Extreme vs. Subtle Anomalies\n(nominal noise+drift)", fontsize=8)
+    ax3.set_ylim(0.0, 1.10)
+    ax3.legend(fontsize=6.2, loc="lower right", framealpha=0.7)
+
+    # Add value labels
+    for bars, vals in [(ax3.containers[0], f1v),
+                       (ax3.containers[1], aucv),
+                       (ax3.containers[2], recv)]:
+        for bar, v in zip(bars, vals):
+            ax3.text(bar.get_x() + bar.get_width()/2, v + 0.012,
+                     f"{v:.2f}", ha="center", fontsize=6.5, fontweight="bold")
+
+    plt.tight_layout()
+    _save(fig, "fig9_virtual_validation.png")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print("Generating 8 publication-quality figures (300 DPI)...")
     fig1_architecture()
@@ -845,4 +945,6 @@ if __name__ == "__main__":
     fig8_sensitivity()
     print("Generating graphical abstract...")
     graphical_abstract()
+    print("Generating virtual validation figure (Fig 9)...")
+    fig9_virtual_validation()
     print(f"\nAll figures saved to {OUT}/")

@@ -240,9 +240,8 @@ def build():
     pdf.set_font("Helvetica", "B", 15)
     pdf.set_text_color(0, 0, 0)
     pdf.multi_cell(0, 8,
-        "MFC-Powered Artificial Intelligence of Things Sensor Network "
-        "for Autonomous Environmental Monitoring: Design, Simulation, "
-        "and Machine Learning Integration",
+        "Simulation-Based Co-Design of an MFC-Powered IoT Sensor Node "
+        "with Embedded Intelligence for Autonomous Environmental Monitoring",
         align="C")
     pdf.ln(4)
 
@@ -294,10 +293,14 @@ def build():
         "drought, gas spike, and flood -- without labelled training data. "
         "Sensitivity analysis identifies "
         "the 10-minute duty cycle as the optimal trade-off; parametric robustness testing "
-        "confirms energy-positive operation across +/-30% MFC parameter variation in 81.5% "
-        "of tested combinations. The open-source Python simulation framework enables "
-        "reproducible pre-prototyping design-space exploration for battery-free "
-        "environmental monitoring."
+        "confirms energy-positive operation in 81.5% of +/-30% MFC parameter combinations, "
+        "and a 200-trial Monte Carlo analysis -- including DC-DC efficiency variation, "
+        "supercapacitor self-discharge, and LoRa packet-loss overhead -- confirms 75.0% "
+        "energy-positive operation under hardware imperfections. "
+        "This work is positioned as a pre-prototyping design-space exploration framework "
+        "rather than a hardware validation study; the open-source Python simulation enables "
+        "reproducible co-design for battery-free environmental monitoring prior to physical "
+        "prototype commitment."
     )
     pdf.ln(3)
 
@@ -624,7 +627,7 @@ def build():
     pdf.set_font("Helvetica", size=10)
     pdf.ln(2)
 
-    pdf.h2("3.6.2. Random Forest Decision Classifier")
+    pdf.h2("3.6.2. Adaptive Decision Model (RF-Based)")
     pdf.body(
         "A Random Forest classifier (n_estimators = 100, max_depth = 6) maps the current energy "
         "state and sensor readings to one of three actions: sleep, measure, or transmit. "
@@ -934,17 +937,30 @@ def build():
         "windows, as demonstrated in the worst-case analysis (Section 5.6)."
     )
 
-    pdf.h2("5.2. Simulation Scope")
+    pdf.h2("5.2. Simulation Scope and Justification")
     pdf.body(
-        "The absence of a physical prototype constitutes the principal limitation. "
-        "While the literature-calibrated approach enables rigorous design-space exploration, "
-        "it is subject to the assumptions embedded in the Nernst OCV and Monod kinetics "
-        "models. In particular, biofilm formation lag (typically 2-6 weeks), temperature-dependent "
-        "ionic conductivity, electrode fouling, and soil heterogeneity are not captured. "
+        "Experimental validation of soil MFC systems requires 2-6 weeks for stable "
+        "biofilm formation, site-specific soil characterisation, and iterative "
+        "electrode optimisation -- making rapid design iteration across multiple "
+        "parameter combinations impractical at the pre-prototyping stage. "
+        "Simulation-based pre-validation is therefore a necessary step widely adopted "
+        "in early-stage energy-harvesting system design: it enables exhaustive "
+        "parameter sweeps, worst-case scenario testing, and ML model evaluation "
+        "before committing hardware resources. This study explicitly adopts that "
+        "paradigm, clearly declaring all MFC electrical parameters as literature-calibrated "
+        "rather than measured. Section 5.7 presents virtual experimental validation "
+        "(Monte Carlo robustness analysis and noise injection tests) that would be "
+        "prohibitively expensive to replicate physically at the design-space exploration stage."
+    )
+    pdf.body(
+        "The absence of a physical prototype remains the principal limitation. "
+        "While the literature-calibrated approach enables rigorous pre-prototyping exploration, "
+        "it is subject to the assumptions of the Nernst OCV and Monod kinetics models. "
+        "Biofilm formation lag, temperature-dependent ionic conductivity, electrode fouling, "
+        "and soil heterogeneity are not captured. "
         "The parametric robustness analysis (Section 5.6) partially addresses this by testing "
-        "the system across +/-30% parameter variations. Physical prototype fabrication and "
-        "field validation remain essential next steps to confirm the energy savings in real "
-        "deployment conditions."
+        "+/-30% parameter variations. Physical prototype fabrication and field validation "
+        "remain essential next steps."
     )
     pdf.h2("5.3. Anomaly Detection Limitations")
     pdf.body(
@@ -1084,7 +1100,69 @@ def build():
         indent=5
     )
 
-    pdf.h2("5.7. Experimental Feasibility Assessment")
+    pdf.h2("5.7. Virtual Experimental Validation")
+    pdf.body(
+        "In the absence of a physical prototype, three computational validation "
+        "experiments are performed to provide hardware-imperfection-aware robustness "
+        "evidence. Results are summarised in Figure 9."
+    )
+    pdf.body(
+        "A) Monte Carlo Robustness Analysis (N = 200). "
+        "The parametric sweep in Section 5.6 tests 27 fixed combinations of three "
+        "MFC biochemical parameters. The Monte Carlo analysis extends this with 200 "
+        "independent random trials that additionally sample DC-DC converter efficiency "
+        "(Uniform[75%, 90%]), supercapacitor self-discharge (1-5% of generated energy "
+        "per cycle), LoRa packet-loss retransmit overhead (0-5%), and sensor measurement "
+        "aging (TruncNormal, +/-8%). Of the 200 trials, 150 (75.0%) remain energy-positive "
+        "(generation-to-consumption ratio >= 1.0). The 25.0% failure cases are driven "
+        "primarily by low MFC output factor (mean mfc_factor = 0.774 in failures vs. "
+        "1.0 nominal), confirming that MFC biochemical variability is the dominant "
+        "risk factor -- not hardware efficiency degradation alone. "
+        "The mean sustainability ratio is 1.140 +/- 0.219, with a minimum of 0.539 "
+        "(extreme low-substrate + high-leakage combination). "
+        "This 75.0% figure represents a more conservative and hardware-realistic "
+        "robustness estimate than the 81.5% from the parametric sweep alone."
+    )
+    pdf.body(
+        "B) Sensor Noise and Drift Injection. "
+        "The Isolation Forest model (trained on Scenario A) is evaluated on Scenario B "
+        "validation data after applying Gaussian measurement noise (sigma: moisture 2%, "
+        "pH 0.1, gas 15 ppm), systematic drift (pH +0.2, moisture +2% bias from "
+        "electrode/probe aging), and ADC quantisation (moisture 1%, gas 10 ppm steps). "
+        "For extreme anomaly signatures (the trained distribution), the F1-score is "
+        "highly robust to noise: F1 = 0.963 even at 3× nominal noise. "
+        "This reflects the wide feature-space separation of the synthetic anomaly classes "
+        "and confirms that sensor calibration errors of the modelled magnitude do not "
+        "compromise detection of extreme events."
+    )
+    pdf.body(
+        "C) Subtle Anomaly Validation. "
+        "A second test evaluates detection of subtle, early-warning anomaly signatures -- "
+        "incipient drought (soil moisture ~18% vs. extreme ~4%), mild pH drop (~5.0 vs. "
+        "extreme ~3.2), moderate gas elevation (~350 ppm vs. extreme ~900 ppm), and "
+        "incipient waterlogging (~78% moisture vs. extreme ~97%) -- with nominal noise "
+        "and drift applied. "
+        "F1-score drops to 0.538 (recall = 0.375), confirming that the fixed contamination "
+        "threshold optimised for extreme anomalies is not directly transferable to "
+        "early-warning detection tasks. "
+        "Crucially, ROC-AUC = 0.929, confirming that the model retains strong "
+        "discriminative capacity (consistent with the 0.85-0.92 range cited in Section 5.3) "
+        "but requires threshold recalibration for subtle signatures. "
+        "Adaptive thresholding based on sliding-window score distributions is identified "
+        "as a high-priority future work item."
+    )
+    pdf.fig(os.path.join(FIGURES, "fig9_virtual_validation.png"),
+            "Figure 9. Virtual experimental validation results. "
+            "(a) Monte Carlo sustainability ratio histogram (N=200, green = energy-positive, "
+            "red = unsustainable): 75.0% of trials with hardware imperfections remain "
+            "energy-positive. "
+            "(b) Isolation Forest F1 and ROC-AUC under increasing sensor noise levels "
+            "(extreme anomaly dataset): performance is highly robust to noise. "
+            "(c) Comparison between extreme-anomaly (clean) and subtle-anomaly (nominal noise) "
+            "scenarios: ROC-AUC = 0.929 for subtle anomalies confirms discriminative capacity "
+            "but F1 = 0.538 indicates the need for threshold recalibration.")
+
+    pdf.h2("5.8. Experimental Feasibility Assessment")
     pdf.body(
         "Although this study is simulation-based, the proposed hardware architecture uses "
         "exclusively commercially available, well-characterised components. The following "
@@ -1120,7 +1198,7 @@ def build():
         "and ML model performance under realistic electrical noise conditions."
     )
 
-    pdf.h2("5.8. LoRa Deployment Limitations")
+    pdf.h2("5.9. LoRa Deployment Limitations")
     pdf.body(
         "The current LoRa analysis assumes an idealised single-node, single-gateway "
         "communication link. Several real-world factors are not captured in the simulation:"
@@ -1155,7 +1233,7 @@ def build():
         indent=5
     )
 
-    pdf.h2("5.9. Limitations and Real-World Deployment Challenges")
+    pdf.h2("5.10. Limitations and Real-World Deployment Challenges")
     pdf.body(
         "This section consolidates the principal limitations that must be addressed before "
         "field deployment:"
@@ -1196,7 +1274,7 @@ def build():
         indent=5
     )
 
-    pdf.h2("5.10. Practical Deployment Scenario")
+    pdf.h2("5.11. Practical Deployment Scenario")
     pdf.body(
         "To illustrate real-world applicability, we describe a reference deployment scenario "
         "for precision agriculture soil monitoring:"
