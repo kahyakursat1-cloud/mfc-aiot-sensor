@@ -108,10 +108,11 @@ REFERENCES = [
              "Model for LoRa Technology. In Proceedings of ITST, Copenhagen, Denmark, 2015; pp. 55-59. "
              "https://doi.org/10.1109/ITST.2015.7377400"),
     # Additional references for anomaly thresholds
-    ("[25]", "USDA. Soil Quality Indicators. USDA Natural Resources Conservation Service, Soil Health "
-             "Technical Note No. 450-03, 2008. Available: https://www.nrcs.usda.gov/"),
-    ("[26]", "McCauley, A.; Jones, C.; Jacobsen, J. Soil pH and Organic Matter. Nutrient Management "
-             "Module No. 8, Montana State University Extension Service, 2009."),
+    ("[25]", "Rawls, W.J.; Brakensiek, D.L.; Saxton, K.E. Estimation of Soil Water Properties. "
+             "Trans. ASAE 1982, 25, 1316-1320. https://doi.org/10.13031/2013.33720"),
+    ("[26]", "Aciego Pietri, J.C.; Brookes, P.C. Relationships between Soil pH and Microbial "
+             "Properties in a UK Arable Soil. Soil Biol. Biochem. 2008, 40, 1856-1861. "
+             "https://doi.org/10.1016/j.soilbio.2008.03.020"),
     ("[27]", "WHO. Guidelines for Drinking-Water Quality, 4th ed.; World Health Organization: "
              "Geneva, Switzerland, 2011; ISBN 978-92-4-154815-1."),
 ]
@@ -306,7 +307,8 @@ def build():
     pdf.set_font("Helvetica", size=10)
     pdf.write(5,
         "microbial fuel cell; energy harvesting; IoT; anomaly detection; LoRa; "
-        "Isolation Forest; edge AI; environmental monitoring; ESP32; supercapacitor")
+        "Isolation Forest; edge AI; environmental monitoring; ESP32; supercapacitor; "
+        "precision agriculture")
     pdf.ln(8)
 
     # ── SECTION 1: INTRODUCTION ─────────────────────────────────────────────
@@ -354,8 +356,8 @@ def build():
            "dynamically selects sleep, measure, or transmit actions based on real-time energy state, "
            "achieving a 47.5% reduction in average energy consumption vs. a fixed-interval baseline.",
         "3. An unsupervised anomaly detection pipeline (Isolation Forest) requiring no labelled "
-           "training data, achieving F1 = 0.895 on four environmental anomaly types at <160 KB "
-           "memory footprint -- compatible with ESP32 deployment.",
+           "training data, achieving F1 = 0.955 +/- 0.022 (5-fold CV, n = 50/class) on four "
+           "environmental anomaly types at <160 KB memory footprint -- compatible with ESP32 deployment.",
         "4. An open-source, reproducible simulation framework for co-design and evaluation of "
            "energy-aware IoT systems prior to physical prototyping.",
     ]:
@@ -957,6 +959,37 @@ def build():
         "electrode fouling, or sensor ageing -- is not addressed in the current implementation. "
         "Periodic retraining using a sliding window of recent field observations is the "
         "recommended mitigation for both domain adaptation and concept drift."
+    )
+    pdf.body(
+        "The near-perfect ROC-AUC (0.999 +/- 0.001) warrants specific attention. This value "
+        "arises from the clean separation of synthetic anomaly distributions -- Drought uses "
+        "soil moisture ~ 4% vs. normal ~ 45%; Gas Spike uses gas_ppm ~ 900 vs. normal "
+        "exponential ~ 55 ppm -- where each anomaly class occupies a distinct, non-overlapping "
+        "region of feature space. In real-world deployments, electromagnetic interference, "
+        "sensor cross-sensitivity (e.g., MQ-135 co-sensitivity to humidity), capacitive probe "
+        "drift, and non-stationarity of soil properties introduce inter-class overlap that "
+        "these ideal distributions do not capture. Based on analogous domain transfer results "
+        "reported for TinyML anomaly detectors [20], a realistically expected ROC-AUC range "
+        "for this application is 0.85-0.92 under real-world conditions. The synthetic results "
+        "should therefore be interpreted as an upper-bound performance estimate rather than "
+        "a field-validated figure."
+    )
+    pdf.body(
+        "Flood anomalies present a specific practical concern beyond the aggregate metrics. "
+        "The per-class analysis (Section 4.4) shows a recall of 0.860 (7 of 50 missed) for "
+        "flood detection, the lowest among all anomaly types. Mechanistically, flood signatures "
+        "(soil moisture > 92%) partially overlap with the upper tail of the simulated normal "
+        "distribution (mean 45%, std 10%), since soil moisture at 3 standard deviations above "
+        "normal reaches approximately 75% -- still below the flood threshold, but the overlap "
+        "at the decision boundary reduces isolation depth for borderline flood samples. "
+        "In a 10-hectare field deployment with 16 nodes, a 14% flood miss rate means that on "
+        "average 2-3 flooded nodes in a 16-node grid may fail to trigger an alert within the "
+        "first 10-minute reporting cycle. Practical mitigations include: "
+        "(1) a secondary single-feature threshold rule (moisture > 88%) as a hard-override "
+        "alongside the Isolation Forest score; and (2) a hysteresis-based confirmation "
+        "scheme that triggers an alert if two consecutive cycles both score above the 80th "
+        "percentile anomaly threshold, reducing false negatives without increasing the false "
+        "positive rate."
     )
 
     pdf.h2("5.4. Comparison with Related Systems")
