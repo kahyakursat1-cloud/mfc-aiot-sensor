@@ -278,29 +278,24 @@ def build():
     pdf.cell(0, 6, "Abstract:", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
     pdf.multi_cell(0, 5.5,
-        "This paper presents a simulation-based framework -- not a physical prototype -- "
-        "for a self-powered Artificial Intelligence of Things (AIoT) environmental sensor "
-        "node driven by soil-based microbial fuel cell (MFC) energy harvesting; all "
-        "MFC electrical parameters are calibrated from peer-reviewed experimental literature. The system "
-        "integrates an MFC (0.3-0.8 V OCV), a 1 F supercapacitor, an ESP32 in 10-minute "
-        "deep-sleep duty cycles, a LoRa Ra-02 433 MHz link, an Isolation Forest (Liu et al., "
-        "2008) for unsupervised anomaly detection, and a Random Forest classifier for "
-        "adaptive duty-cycle management. Independent training and validation parameter sets "
-        "(Scenarios A and B) prevent circular validation. The proposed AI strategy reduces "
-        "average energy consumption by 47.5% versus a fixed always-transmit baseline "
+        "This paper presents a pre-prototyping co-design framework -- simulation only, "
+        "not a physical prototype -- for a battery-free IoT environmental sensor node "
+        "driven by soil-based microbial fuel cell (MFC) energy harvesting. "
+        "All MFC electrical parameters are calibrated from peer-reviewed experimental literature. "
+        "The architecture integrates an MFC (0.3-0.8 V OCV), a 1 F supercapacitor, an ESP32 "
+        "in 10-minute deep-sleep duty cycles, and a LoRa Ra-02 433 MHz link. "
+        "An Isolation Forest [13] provides unsupervised anomaly detection; "
+        "an adaptive decision model manages duty-cycle allocation based on energy state. "
+        "Independent parameter sets (Scenarios A and B) prevent circular validation. "
+        "The adaptive strategy reduces energy consumption by 47.5% versus always-transmit "
         "(0.413 vs. 0.787 mJ/cycle). The Isolation Forest achieves F1 = 0.955 +/- 0.022 "
-        "(5-fold CV, n = 50 per class, ROC-AUC = 0.999) on four anomaly types -- pH crash, "
-        "drought, gas spike, and flood -- without labelled training data. "
-        "Sensitivity analysis identifies "
-        "the 10-minute duty cycle as the optimal trade-off; parametric robustness testing "
-        "confirms energy-positive operation in 81.5% of +/-30% MFC parameter combinations, "
-        "and a 200-trial Monte Carlo analysis -- including DC-DC efficiency variation, "
-        "supercapacitor self-discharge, and LoRa packet-loss overhead -- confirms 75.0% "
-        "energy-positive operation under hardware imperfections. "
-        "This work is positioned as a pre-prototyping design-space exploration framework "
-        "rather than a hardware validation study; the open-source Python simulation enables "
-        "reproducible co-design for battery-free environmental monitoring prior to physical "
-        "prototype commitment."
+        "(5-fold CV, n = 50/class) on four anomaly types without labelled training data; "
+        "a subtle-anomaly virtual test confirms ROC-AUC = 0.929 under realistic noise. "
+        "A 200-trial Monte Carlo analysis including DC-DC efficiency variation, "
+        "supercapacitor self-discharge, and packet-loss overhead confirms 75.0% "
+        "energy-positive operation under hardware imperfections (vs. 81.5% for the "
+        "biochemical-parameter sweep alone). The open-source Python simulation enables "
+        "reproducible design-space exploration prior to prototype commitment."
     )
     pdf.ln(3)
 
@@ -355,9 +350,10 @@ def build():
         "1. A microbial fuel cell-powered, energy-autonomous IoT sensor architecture integrating "
            "supercapacitor buffering, ESP32 deep-sleep firmware, and LoRa long-range communication "
            "into a single battery-free platform.",
-        "2. An AI-based adaptive energy management strategy (Random Forest decision classifier) that "
-           "dynamically selects sleep, measure, or transmit actions based on real-time energy state, "
-           "achieving a 47.5% reduction in average energy consumption vs. a fixed-interval baseline.",
+        "2. An embedded adaptive energy management strategy (compact RF decision model as a deployable "
+           "policy approximating the optimal threshold controller) that dynamically selects sleep, "
+           "measure, or transmit actions, achieving a 47.5% reduction in average energy consumption "
+           "vs. a fixed-interval baseline.",
         "3. An unsupervised anomaly detection pipeline (Isolation Forest) requiring no labelled "
            "training data, achieving F1 = 0.955 +/- 0.022 (5-fold CV, n = 50/class) on four "
            "environmental anomaly types at <160 KB memory footprint -- compatible with ESP32 deployment.",
@@ -574,7 +570,7 @@ def build():
         "the Ra-02 datasheet (+14 dBm TX, -137 dBm sensitivity at SF12)."
     )
 
-    pdf.h2("3.6. Artificial Intelligence Layer")
+    pdf.h2("3.6. Embedded Intelligence Layer")
     pdf.h2("3.6.1. Isolation Forest Anomaly Detector")
     pdf.body(
         "Isolation Forest [13] detects anomalies by randomly partitioning the feature "
@@ -713,7 +709,7 @@ def build():
         "(0.264 mJ, 33.5%). Total consumption per 10-minute cycle is 0.787 mJ when a "
         "transmission occurs. A naive always-transmit strategy (fixed periodic TX every cycle) "
         "would consume 0.787 mJ/cycle continuously. "
-        "The proposed AI-based strategy reduces this to approximately 0.413 mJ/cycle on average "
+        "The adaptive duty-cycle strategy reduces this to approximately 0.413 mJ/cycle on average "
         "(62% sleep, 26% measure-only, 12% transmit), representing a 47.5% reduction in "
         "energy consumption compared to the fixed-interval baseline. Table 2 summarises the "
         "per-component breakdown."
@@ -749,7 +745,7 @@ def build():
     pdf.cell(ecol[2], 5.5, "100.0", border=1)
     pdf.cell(ecol[3], 5.5, "", border=1)
     pdf.ln()
-    pdf.cell(ecol[0], 5.5, "AI Adaptive Average", border=1)
+    pdf.cell(ecol[0], 5.5, "Adaptive Average", border=1)
     pdf.cell(ecol[1], 5.5, "0.413", border=1)
     pdf.cell(ecol[2], 5.5, "52.5", border=1)
     pdf.cell(ecol[3], 5.5, "-47.5%", border=1)
@@ -767,16 +763,15 @@ def build():
         "approximately 15%. This deficit is recoverable within 3-4 consecutive sleep-only "
         "cycles (30-40 minutes), during which the supercapacitor recharges from 25% to 55% SoC. "
         "To assess variability, the simulation was repeated across five independent random seeds "
-        "(seeds 42-46). The AI adaptive energy saving across runs was 47.5% +/- 2.1% "
+        "(seeds 42-46). The adaptive energy saving across runs was 47.5% +/- 2.1% "
         "(mean +/- std), confirming that the result is not seed-dependent."
     )
     pdf.fig(os.path.join(FIGURES, "fig3_energy_budget.png"),
             "Figure 3. Per-component energy budget for a 10-minute duty cycle showing "
             "absolute consumption per consumer (left) and proportional distribution (right). "
-            "The dashed line marks mean MFC generation (0.48 mJ). The AI-based selective "
-            "transmission strategy reduces average consumption by 47.5% relative to a "
-            "fixed always-transmit baseline, demonstrating the key energy efficiency "
-            "contribution of the proposed framework.")
+            "The dashed line marks mean MFC generation (0.48 mJ). The adaptive selective "
+            "transmission strategy (62% sleep / 26% measure / 12% transmit) reduces average "
+            "consumption by 47.5% relative to a fixed always-transmit baseline.")
 
     pdf.h2("4.3. LoRa Spreading Factor Analysis")
     pdf.body(
@@ -852,11 +847,11 @@ def build():
         "Average current draw is computed as: I_avg = E_avg_per_cycle / (V_cc * T_cycle) "
         "= 0.413 mJ / (3.3 V * 600 s) = 0.209 mA. Over the full 48-hour period, including "
         "emergency transmissions and measurement cycles, the weighted average current was "
-        "0.87 mA -- below the 1 mA design target, confirming that the AI-driven duty cycle "
-        "enables self-sustaining operation within the MFC power envelope."
+        "0.87 mA -- below the 1 mA design target, confirming that the adaptive duty-cycle "
+        "strategy enables self-sustaining operation within the MFC power envelope."
     )
     pdf.fig(os.path.join(FIGURES, "fig6_decision.png"),
-            "Figure 6. AI decision model duty-cycle statistics over 48 hours (288 cycles): "
+            "Figure 6. Adaptive decision model duty-cycle statistics over 48 hours (288 cycles): "
             "(a) action distribution; (b) capacitor SoC evolution; "
             "(c) transmission and anomaly alert counts.")
 
@@ -913,7 +908,7 @@ def build():
     )
     pdf.fig(os.path.join(FIGURES, "fig8_sensitivity.png"),
             "Figure 8. Duty-cycle sensitivity analysis: (a) energy consumption per cycle comparing "
-            "fixed TX vs. AI adaptive strategies across five cycle lengths; (b) sustainability ratio "
+            "fixed TX vs. adaptive strategies across five cycle lengths; (b) sustainability ratio "
             "matrix (MFC power vs. cycle length) where values >= 1.0 indicate energy-positive "
             "operation; (c) trade-off between TX success rate and data volume per day.")
 
@@ -933,7 +928,7 @@ def build():
         "engineering mitigations are available: (1) the BQ25570's configurable MPPT setpoint "
         "can be tuned to extract 5-10% additional power; (2) increasing supercapacitor "
         "capacity from 1 F to 2.2 F doubles the energy buffer at minimal cost increase; and "
-        "(3) the AI duty-cycle model can dynamically extend sleep periods during low-generation "
+        "(3) the decision model can dynamically extend sleep periods during low-generation "
         "windows, as demonstrated in the worst-case analysis (Section 5.6)."
     )
 
@@ -1040,8 +1035,8 @@ def build():
         ("Communication",      "nRF24L01 2.4 GHz",  "ZigBee multi-hop",  "LoRa SF7 433 MHz"),
         ("Sensing parameters", "Temp, humidity",    "Moisture, temp",    "Temp, pH, moisture, gas"),
         ("ML layer",           "None",              "None",              "Isolation Forest + RF"),
-        ("Adaptive duty cycle","Fixed",             "Fixed",             "AI-driven (RF)"),
-        ("Avg. energy/cycle",  "N.R.",              "N.R.",              "0.413 mJ (AI adaptive)"),
+        ("Adaptive duty cycle","Fixed",             "Fixed",             "RF decision model"),
+        ("Avg. energy/cycle",  "N.R.",              "N.R.",              "0.413 mJ (adaptive)"),
         ("Validation type",    "Lab prototype",     "Field prototype",   "Simulation (lit. cal.)"),
     ]
     for r in t3rows:
@@ -1305,24 +1300,25 @@ def build():
     pdf.h1("6. Conclusions")
     pdf.body(
         "This paper presented a simulation-based co-design framework for a microbial fuel cell "
-        "energy harvesting system, ESP32-based embedded sensor node, and two-model AI layer for "
+        "energy harvesting system, ESP32-based embedded sensor node, and embedded ML layer for "
         "autonomous environmental monitoring. The framework enables rigorous pre-prototyping "
-        "evaluation using exclusively literature-calibrated parameters. Key findings are:"
+        "evaluation using literature-calibrated parameters. Key findings are:"
     )
     for point in [
-        "The proposed AI-based adaptive duty-cycle management reduces average energy consumption "
-        "by 47.5% compared to a fixed always-transmit baseline (0.413 vs 0.787 mJ/cycle), "
-        "enabling self-sustaining operation within the MFC power envelope.",
+        "The adaptive duty-cycle strategy (RF decision model approximating the optimal threshold "
+        "controller) reduces average energy consumption by 47.5% vs. always-transmit "
+        "(0.413 vs 0.787 mJ/cycle), enabling self-sustaining operation within the MFC power envelope.",
         "Isolation Forest anomaly detection achieves F1-score = 0.955 +/- 0.022 (5-fold CV, "
         "n = 50/class, ROC-AUC = 0.999) without requiring labelled training data, making it "
         "directly deployable on new installations.",
         "LoRa SF7 (41.2 ms ToA, 16.2 uJ per packet) is the optimal default spreading factor "
         "for sub-1.2 km links; SF9 provides the best range-energy trade-off for emergency transmissions.",
-        "The full AI inference pipeline (Isolation Forest ~115 KB + Random Forest ~45 KB, "
-        "~12 ms inference latency) runs within the 520 KB SRAM constraint of the ESP32, "
+        "The full on-device inference pipeline (Isolation Forest ~115 KB + decision model ~45 KB, "
+        "~12 ms combined latency) runs within the 520 KB SRAM constraint of the ESP32, "
         "consistent with TinyML deployment guidelines [19,20].",
-        "Parametric robustness testing confirms energy-positive operation in 81.5% of +/-30% "
-        "parameter variations, demonstrating graceful degradation under adverse conditions.",
+        "Parametric robustness testing confirms energy-positive operation in 81.5% of +/-30% MFC "
+        "parameter variations; a 200-trial Monte Carlo including hardware imperfections yields "
+        "75.0% energy-positive, demonstrating graceful degradation under combined stress.",
         "The open-source Python simulation framework enables reproducible design-space exploration "
         "before hardware commitment.",
     ]:
