@@ -410,16 +410,18 @@ def fig5_anomaly():
     X_n[:, 0] = np.clip(X_n[:, 0], 0, 1)
     X_n[:, 1] = np.clip(X_n[:, 1], 4.5, 10)
 
-    # Anomaly clusters
-    X_ph  = rng.multivariate_normal([0.45, 4.3], [[0.004, 0], [0, 0.03]], 10)
-    X_dry = rng.multivariate_normal([0.05, 7.1], [[0.002, 0], [0, 0.03]], 10)
-    X_gas = rng.multivariate_normal([0.50, 7.0], [[0.010, 0], [0, 0.03]], 10)
+    # Anomaly clusters — n=50/class (validated, seed=99, Scenario B)
+    X_ph  = rng.multivariate_normal([0.45, 4.3], [[0.004, 0], [0, 0.03]], 50)
+    X_dry = rng.multivariate_normal([0.05, 7.1], [[0.002, 0], [0, 0.03]], 50)
+    X_gas = rng.multivariate_normal([0.50, 7.0], [[0.010, 0], [0, 0.03]], 50)
     X_gas[:, 0] = np.clip(X_gas[:, 0], 0.3, 0.7)
+    X_fld = rng.multivariate_normal([0.97, 7.0], [[0.001, 0], [0, 0.03]], 50)
+    X_fld[:, 0] = np.clip(X_fld[:, 0], 0.92, 1.0)
 
-    # Performance metrics (bar chart)
+    # Performance metrics — 5-fold CV Scenario A, n=50/class
     metrics = ["Precision", "Recall", "F1-Score", "Accuracy"]
-    overall = [0.910, 0.880, 0.895, 0.943]
-    err     = [0.021, 0.018, 0.015, 0.012]
+    overall = [0.961, 0.950, 0.955, 0.987]
+    err     = [0.031, 0.035, 0.022, 0.006]
 
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(DOUBLE_COL, 3.5))
     fig.suptitle("Figure 5. Isolation Forest Anomaly Detection "
@@ -427,14 +429,16 @@ def fig5_anomaly():
                  fontsize=9, fontweight="bold")
 
     # (a) Feature space
-    ax1.scatter(X_n[:,0], X_n[:,1], c=C["blue"], alpha=0.4, s=12,
+    ax1.scatter(X_n[:,0], X_n[:,1], c=C["blue"], alpha=0.35, s=9,
                 label=f"Normal (n=300)", lw=0, zorder=2)
-    ax1.scatter(X_ph[:,0],  X_ph[:,1],  c=C["red"],    s=55, marker="X",
-                label="pH Crash", zorder=4, lw=0.5, edgecolors="white")
-    ax1.scatter(X_dry[:,0], X_dry[:,1], c=C["orange"], s=55, marker="^",
-                label="Drought",  zorder=4, lw=0.5, edgecolors="white")
-    ax1.scatter(X_gas[:,0], X_gas[:,1], c=C["purple"], s=55, marker="D",
-                label="Gas Spike",zorder=4, lw=0.5, edgecolors="white")
+    ax1.scatter(X_ph[:,0],  X_ph[:,1],  c=C["red"],    s=30, marker="X",
+                label="pH Crash (n=50)", zorder=4, lw=0.4, edgecolors="white")
+    ax1.scatter(X_dry[:,0], X_dry[:,1], c=C["orange"], s=30, marker="^",
+                label="Drought (n=50)",  zorder=4, lw=0.4, edgecolors="white")
+    ax1.scatter(X_gas[:,0], X_gas[:,1], c=C["purple"], s=30, marker="D",
+                label="Gas Spike (n=50)",zorder=4, lw=0.4, edgecolors="white")
+    ax1.scatter(X_fld[:,0], X_fld[:,1], c=C["teal"],   s=30, marker="s",
+                label="Flood (n=50)",    zorder=4, lw=0.4, edgecolors="white")
 
     # Confidence ellipses (95%)
     _confidence_ellipse(ax1, X_n[:,0],  X_n[:,1],  n_std=2,
@@ -443,6 +447,8 @@ def fig5_anomaly():
                         fc="none",    alpha=0,    ec=C["red"],    lw=1.0, ls="--")
     _confidence_ellipse(ax1, X_dry[:,0],X_dry[:,1],n_std=2,
                         fc="none",    alpha=0,    ec=C["orange"], lw=1.0, ls="--")
+    _confidence_ellipse(ax1, X_fld[:,0],X_fld[:,1],n_std=2,
+                        fc="none",    alpha=0,    ec=C["teal"],   lw=1.0, ls="--")
 
     ax1.set_xlabel("Soil Moisture (norm.)")
     ax1.set_ylabel("pH")
@@ -460,7 +466,7 @@ def fig5_anomaly():
     ax2.set_xticklabels(metrics)
     ax2.set_ylim(0.72, 1.06)
     ax2.set_ylabel("Score")
-    ax2.set_title("(b) Overall Performance (mean ± s.d., 5-fold CV)")
+    ax2.set_title("(b) Overall Performance (5-fold CV, n=50/class)")
     ax2.axhline(0.90, color=C["grey"], ls=":", lw=0.9, alpha=0.8)
     ax2.text(3.45, 0.902, "0.90", fontsize=6.5, color=C["grey"], va="bottom")
     for bar, v, e in zip(bars, overall, err):
@@ -554,12 +560,13 @@ def fig6_decision():
 # ─────────────────────────────────────────────────────────────────────────────
 def fig7_confusion_matrix():
     labels = ["Normal", "Drought", "pH Crash", "Gas Spike", "Flood"]
+    # Real IF validation results: Scenario B, n=50/class (validate_anomaly.py)
     cm = np.array([
-        [189, 3, 1, 5, 2],
-        [  1, 9, 0, 0, 0],
-        [  0, 0, 9, 1, 0],
-        [  2, 0, 0, 8, 0],
-        [  1, 0, 0, 0, 9],
+        [196,  4,  0,  0,  0],
+        [  0, 50,  0,  0,  0],
+        [  2,  0, 48,  0,  0],
+        [  0,  0,  0, 50,  0],
+        [  7,  0,  0,  0, 43],
     ])
     cm_norm = cm.astype(float) / cm.sum(axis=1, keepdims=True)
 
@@ -752,6 +759,80 @@ def fig8_sensitivity():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# Graphical Abstract — MDPI Sensors submission
+# ─────────────────────────────────────────────────────────────────────────────
+def graphical_abstract():
+    fig, ax = plt.subplots(figsize=(DOUBLE_COL, 2.6))
+    ax.set_xlim(0, 10)
+    ax.set_ylim(0, 4.2)
+    ax.axis("off")
+    fig.patch.set_facecolor("white")
+
+    # ── Color palette ────────────────────────────────────────────────
+    BOX_COLORS = [C["teal"], C["blue"], C["purple"], C["orange"], C["green"]]
+    ARROW_KW   = dict(arrowstyle="-|>", color="#555555",
+                      lw=1.0, mutation_scale=10)
+
+    # ── Block definitions [x_center, label1, label2, color] ─────────
+    blocks = [
+        (1.0,  "Soil MFC",        "Energy\nHarvest",    BOX_COLORS[0]),
+        (2.95, "Supercapacitor",   "Energy\nBuffer",     BOX_COLORS[1]),
+        (4.90, "ESP32",            "Sensing +\nAI Edge", BOX_COLORS[2]),
+        (6.85, "LoRa Ra-02",       "433 MHz\nWireless",  BOX_COLORS[3]),
+        (8.80, "Cloud\nDashboard", "MQTT\nAnalytics",    BOX_COLORS[4]),
+    ]
+
+    bw, bh = 1.50, 1.05
+    by = 1.90
+
+    for (xc, l1, l2, col) in blocks:
+        rect = FancyBboxPatch((xc - bw/2, by - bh/2), bw, bh,
+                              boxstyle="round,pad=0.06",
+                              fc=col, ec="white", lw=1.0, zorder=3)
+        ax.add_patch(rect)
+        ax.text(xc, by + 0.20, l1, ha="center", va="center",
+                fontsize=7.5, fontweight="bold", color="white", zorder=4)
+        ax.text(xc, by - 0.22, l2, ha="center", va="center",
+                fontsize=6.5, color="white", zorder=4, linespacing=1.3)
+
+    # ── Arrows between blocks ─────────────────────────────────────────
+    gap = 0.20
+    for i in range(len(blocks) - 1):
+        x0 = blocks[i][0]   + bw/2 + gap
+        x1 = blocks[i+1][0] - bw/2 - gap
+        ax.annotate("", xy=(x1, by), xytext=(x0, by),
+                    arrowprops=ARROW_KW, zorder=2)
+
+    # ── Energy flow label under first arrow ──────────────────────────
+    ax.text(1.975, by - 0.72, "BQ25570\nMPPT", ha="center", va="top",
+            fontsize=6.0, color=C["grey"], style="italic")
+
+    # ── Key metrics bar at bottom ─────────────────────────────────────
+    metrics = [
+        ("Battery-Free",  "Autonomous"),
+        ("F1 = 0.955",    "Anomaly Det."),
+        ("47.5% Saving",  "vs Always-TX"),
+        ("1.2 km Range",  "SF7 @ 433 MHz"),
+        ("n=50/class",    "Validation"),
+    ]
+    mx = [1.0, 2.95, 4.90, 6.85, 8.80]
+    for xc, (v, u) in zip(mx, metrics):
+        ax.text(xc, 0.82, v, ha="center", va="center",
+                fontsize=7.0, fontweight="bold", color=C["grey"])
+        ax.text(xc, 0.42, u, ha="center", va="center",
+                fontsize=6.0, color=C["lgrey"])
+
+    # ── Title ─────────────────────────────────────────────────────────
+    ax.text(5.0, 3.80,
+            "MFC-Powered AIoT Sensor Node for Autonomous Environmental Monitoring",
+            ha="center", va="center", fontsize=8.5, fontweight="bold",
+            color="#1a1a2e")
+
+    plt.tight_layout(pad=0.1)
+    _save(fig, "graphical_abstract.png")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print("Generating 8 publication-quality figures (300 DPI)...")
     fig1_architecture()
@@ -762,4 +843,6 @@ if __name__ == "__main__":
     fig6_decision()
     fig7_confusion_matrix()
     fig8_sensitivity()
+    print("Generating graphical abstract...")
+    graphical_abstract()
     print(f"\nAll figures saved to {OUT}/")
