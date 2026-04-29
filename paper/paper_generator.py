@@ -288,7 +288,7 @@ def build():
     pdf.cell(0, 6, "Abstract:", new_x="LMARGIN", new_y="NEXT")
     pdf.set_font("Helvetica", size=10)
     pdf.multi_cell(0, 5.5,
-        "This paper presents a simulation-grounded, hardware-aware co-design framework "
+        "This paper presents a simulation-grounded virtual prototyping framework "
         "for a battery-free environmental sensor node powered by soil-based microbial "
         "fuel cells (MFCs). Unlike purely simulation-driven approaches, the framework "
         "integrates literature-calibrated electrochemical modelling with hardware-imperfection-"
@@ -298,13 +298,14 @@ def build():
         "An adaptive duty-cycle decision model reduces energy consumption by 47.5% versus "
         "always-transmit operation (0.413 vs. 0.787 mJ/cycle). "
         "An Isolation Forest anomaly detector achieves F1 = 0.955 +/- 0.022 (5-fold CV, "
-        "n = 50/class) without labelled training data; subtle-anomaly virtual testing "
-        "confirms F1 = 0.880 and ROC-AUC = 0.929 under realistic noise. "
-        "Power-trace emulation with a literature-calibrated MFC voltage profile validates "
-        "the energy model with MAPE = 8.5% vs. the flat-nominal simulation baseline. "
+        "n = 50/class) without labelled training data; under realistic sensor noise and drift "
+        "F1 = 0.880 and ROC-AUC = 0.929. "
+        "Power-trace emulation validates the energy model within a cross-study fidelity "
+        "envelope of [-1.6%, +8.5%] MAPE across two independently parameterised scenarios. "
         "A 200-trial Monte Carlo analysis confirms 75.0% energy-positive operation under "
-        "combined hardware imperfections. The open-source framework provides a reproducible "
-        "pre-prototyping methodology applicable to any energy-harvesting IoT design."
+        "combined hardware imperfections. The open-source virtual prototyping framework "
+        "provides a reproducible pre-prototyping methodology applicable to any "
+        "energy-harvesting IoT design."
     )
     pdf.ln(3)
 
@@ -371,7 +372,7 @@ def build():
            "-- that validates the energy model within 8.5% against a programmable power "
            "supply MFC profile, bridging the gap between flat-nominal simulation and "
            "hardware behaviour (Figure 9).",
-        "5. An open-source, reproducible simulation framework for co-design of energy-aware "
+        "5. An open-source, reproducible virtual prototyping framework for energy-aware "
            "IoT systems prior to physical prototyping, with fully documented parameterisation "
            "and a structured Simulation-Emulation-Prototype path toward hardware validation.",
     ]:
@@ -1518,7 +1519,7 @@ def build():
     # ── SECTION 6: CONCLUSIONS ───────────────────────────────────────────────
     pdf.h1("6. Conclusions")
     pdf.body(
-        "This paper presented a simulation-grounded, hardware-aware co-design framework for "
+        "This paper presented a simulation-grounded virtual prototyping framework for "
         "a microbial fuel cell energy harvesting system integrating an ESP32-based embedded "
         "sensor node and an adaptive embedded ML layer for autonomous environmental monitoring. "
         "A Simulation-Emulation-Prototype pipeline distinguishes this work from purely "
