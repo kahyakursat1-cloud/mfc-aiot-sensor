@@ -479,9 +479,9 @@ def fig5_anomaly():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 6 — Decision Model Duty-Cycle Statistics
+# Figure 7 — Decision Model Duty-Cycle Statistics
 # ─────────────────────────────────────────────────────────────────────────────
-def fig6_decision():
+def fig7_decision():
     rng = np.random.default_rng(7)
     n_cycles = 288
     actions  = rng.choice(["Sleep", "Measure", "Transmit"],
@@ -496,7 +496,7 @@ def fig6_decision():
         soc[i] = float(np.clip(soc[i-1] + gen - cost, 0.10, 0.97))
 
     fig, axes = plt.subplots(1, 3, figsize=(DOUBLE_COL, 3.4))
-    fig.suptitle("Figure 6. AI Decision Model: 48 h Duty-Cycle Statistics (288 cycles)",
+    fig.suptitle("Figure 7. AI Decision Model: 48 h Duty-Cycle Statistics (288 cycles)",
                  fontsize=9, fontweight="bold")
 
     # (a) Donut chart
@@ -552,13 +552,13 @@ def fig6_decision():
     ax3.tick_params(axis="x", labelsize=7)
 
     plt.tight_layout()
-    _save(fig, "fig6_decision.png")
+    _save(fig, "fig7_decision.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 7 — Confusion Matrix (per-class)
+# Figure 6 — Confusion Matrix (per-class)
 # ─────────────────────────────────────────────────────────────────────────────
-def fig7_confusion_matrix():
+def fig6_confusion_matrix():
     labels = ["Normal", "Drought", "pH Crash", "Gas Spike", "Flood"]
     # Real IF validation results: Scenario B, n=50/class (validate_anomaly.py)
     cm = np.array([
@@ -579,7 +579,7 @@ def fig7_confusion_matrix():
 
     fig, axes = plt.subplots(1, 2, figsize=(DOUBLE_COL, 3.8),
                              gridspec_kw={"width_ratios": [1.15, 1]})
-    fig.suptitle("Figure 7. Confusion Matrix and Per-Class Detection Performance",
+    fig.suptitle("Figure 6. Confusion Matrix and Per-Class Detection Performance",
                  fontsize=9, fontweight="bold")
 
     # (a) Heatmap — show both raw count and normalised %
@@ -635,7 +635,7 @@ def fig7_confusion_matrix():
                      fontweight="bold", color=C["orange"])
 
     plt.tight_layout()
-    _save(fig, "fig7_confusion.png")
+    _save(fig, "fig6_confusion.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -833,12 +833,12 @@ def graphical_abstract():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Figure 9 — Virtual Experimental Validation
+# Figure 10 — Virtual Experimental Validation
 #   Panel (a): Monte Carlo sustainability ratio histogram (N=200)
 #   Panel (b): IF performance on noise sweep (extreme anomalies)
 #   Panel (c): IF performance on subtle/early-warning anomalies
 # ─────────────────────────────────────────────────────────────────────────────
-def fig9_virtual_validation():
+def fig10_virtual_validation():
     import sys, os as _os
     _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
     if _root not in sys.path:
@@ -930,16 +930,16 @@ def fig9_virtual_validation():
                      f"{v:.2f}", ha="center", fontsize=5.8, fontweight="bold")
 
     plt.tight_layout()
-    _save(fig, "fig9_virtual_validation.png")
+    _save(fig, "fig10_virtual_validation.png")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # ─────────────────────────────────────────────────────────────────────────────
-# Fig 10 — Power Trace Emulation Validation
+# Figure 9 — Power Trace Emulation Validation
 #   Panel (a): V_oc time series — emulation trace vs flat-nominal simulation
 #   Panel (b): Cumulative harvested energy — emulation vs simulation
 # ─────────────────────────────────────────────────────────────────────────────
-def fig10_emulation_validation():
+def fig9_emulation_validation():
     import sys, os as _os
     _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
     if _root not in sys.path:
@@ -1018,7 +1018,7 @@ def fig10_emulation_validation():
     ax2.grid(True, alpha=0.3, ls=":")
     ax2.tick_params(labelsize=9)
 
-    out_path = os.path.join(OUT, "fig10_emulation_validation.png")
+    out_path = os.path.join(OUT, "fig9_emulation_validation.png")
     fig.savefig(out_path, dpi=300, bbox_inches="tight")
     plt.close(fig)
     print(f"  Saved {out_path}")
@@ -1031,13 +1031,13 @@ if __name__ == "__main__":
     fig3_energy_budget()
     fig4_lora()
     fig5_anomaly()
-    fig6_decision()
-    fig7_confusion_matrix()
+    fig6_confusion_matrix()
+    fig7_decision()
     fig8_sensitivity()
     print("Generating graphical abstract...")
     graphical_abstract()
-    print("Generating virtual validation figure (Fig 9)...")
-    fig9_virtual_validation()
-    print("Generating emulation validation figure (Fig 10)...")
-    fig10_emulation_validation()
+    print("Generating emulation validation figure (Fig 9)...")
+    fig9_emulation_validation()
+    print("Generating virtual validation figure (Fig 10)...")
+    fig10_virtual_validation()
     print(f"\nAll figures saved to {OUT}/")

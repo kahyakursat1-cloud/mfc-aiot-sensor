@@ -370,7 +370,7 @@ def build():
            "a simulation-to-emulation validation pipeline for MFC-powered AIoT sensor nodes "
            "-- that validates the energy model within 8.5% against a programmable power "
            "supply MFC profile, bridging the gap between flat-nominal simulation and "
-           "hardware behaviour (Figure 10).",
+           "hardware behaviour (Figure 9).",
         "5. An open-source, reproducible simulation framework for co-design of energy-aware "
            "IoT systems prior to physical prototyping, with fully documented parameterisation "
            "and a structured Simulation-Emulation-Prototype path toward hardware validation.",
@@ -726,17 +726,9 @@ def build():
         "a time-varying profile with V_rms > V_oc_nom produces more energy than a "
         "flat profile at V_oc_nom (Jensen inequality for convex functions). "
         "Consequently, the simulation constitutes a conservative lower-bound energy estimate, "
-        "strengthening the validity of all energy-positive conclusions drawn in Section 5.1."
+        "strengthening the validity of all energy-positive conclusions drawn in Section 5.1 "
+        "(voltage profile and cumulative energy comparison shown in Figure 9)."
     )
-    pdf.fig(os.path.join(FIGURES, "fig10_emulation_validation.png"),
-            "Figure 10. Power-trace emulation validation. "
-            "(a) MFC open-circuit voltage profile over one 10-minute duty cycle: "
-            "emulation trace (blue, V_oc_init = 0.80 V decaying with tau = 180 s) "
-            "vs. flat-nominal simulation model (red dashed, 0.60 V). "
-            "Shaded regions indicate deviation from the nominal assumption. "
-            "(b) Cumulative harvested energy: the trace-based emulation yields "
-            "0.521 mJ vs. 0.480 mJ for the flat-nominal model (MAPE = +8.5%), "
-            "confirming the simulation is a conservative lower bound.")
 
     # ── SECTION 4: RESULTS ──────────────────────────────────────────────────
     pdf.h1("4. Results")
@@ -876,7 +868,7 @@ def build():
             "(b) overall performance metrics from 5-fold CV on Scenario A "
             "(precision 0.961, recall 0.950, F1 0.955, accuracy 0.987; mean +/- s.d.).")
     pdf.body(
-        "Figure 7 presents the full confusion matrix and per-class detection metrics "
+        "Figure 6 presents the full confusion matrix and per-class detection metrics "
         "(Scenario B, n = 50 per anomaly class). "
         "Drought and gas spike anomalies are detected with perfect recall (1.000), as their "
         "feature values fall far outside the normal distribution boundary. "
@@ -887,10 +879,11 @@ def build():
         "of false negatives. A dedicated moisture-specific upper threshold or secondary "
         "classifier could reduce flood false negatives in future work."
     )
-    pdf.fig(os.path.join(FIGURES, "fig7_confusion.png"),
-            "Figure 7. (a) Normalized confusion matrix showing per-class detection performance "
-            "across five categories (Normal, Drought, pH Crash, Gas Spike, Flood). Gas spikes "
-            "produce the most false negatives due to overlap with the normal gas distribution. "
+    pdf.fig(os.path.join(FIGURES, "fig6_confusion.png"),
+            "Figure 6. (a) Normalized confusion matrix showing per-class detection performance "
+            "across five categories (Normal, Drought, pH Crash, Gas Spike, Flood). Flood "
+            "anomalies show the lowest recall (0.860) due to overlap with the upper tail of "
+            "the normal soil moisture distribution. "
             "(b) Per-class precision, recall, and F1-score, with the 0.90 target line shown.")
 
     pdf.h2("4.5. Decision Model and Duty-Cycle Statistics")
@@ -898,7 +891,7 @@ def build():
         "Over a simulated 48-hour period (288 duty cycles), the decision model allocated "
         "62% of cycles to deep sleep, 26% to measurement-only, and 12% to full transmission. "
         "This adaptive allocation is the primary mechanism achieving the 47.5% energy saving "
-        "reported in Section 4.2. Figure 6 shows the action distribution, capacitor SoC trace, "
+        "reported in Section 4.2. Figure 7 shows the action distribution, capacitor SoC trace, "
         "and communication statistics. The SoC remained above the 25% emergency threshold for "
         "97.2% of cycles. Eleven emergency forced transmissions occurred during prolonged "
         "low-substrate periods."
@@ -910,8 +903,8 @@ def build():
         "0.87 mA -- below the 1 mA design target, confirming that the adaptive duty-cycle "
         "strategy enables self-sustaining operation within the MFC power envelope."
     )
-    pdf.fig(os.path.join(FIGURES, "fig6_decision.png"),
-            "Figure 6. Adaptive decision model duty-cycle statistics over 48 hours (288 cycles): "
+    pdf.fig(os.path.join(FIGURES, "fig7_decision.png"),
+            "Figure 7. Adaptive decision model duty-cycle statistics over 48 hours (288 cycles): "
             "(a) action distribution; (b) capacitor SoC evolution; "
             "(c) transmission and anomaly alert counts.")
 
@@ -1025,6 +1018,16 @@ def build():
         "+/-30% parameter variations. Physical prototype fabrication and field validation "
         "remain essential next steps."
     )
+    pdf.fig(os.path.join(FIGURES, "fig9_emulation_validation.png"),
+            "Figure 9. Power-trace emulation validation. "
+            "(a) MFC open-circuit voltage profile over one 10-minute duty cycle: "
+            "emulation trace (blue, V_oc_init = 0.80 V decaying with tau = 180 s) "
+            "vs. flat-nominal simulation model (red dashed, 0.60 V). "
+            "Shaded regions indicate deviation from the nominal assumption. "
+            "(b) Cumulative harvested energy: the trace-based emulation yields "
+            "0.521 mJ vs. 0.480 mJ for the flat-nominal model (MAPE = +8.5%), "
+            "confirming the simulation is a conservative lower bound.")
+
     pdf.h2("5.3. Anomaly Detection Limitations")
     pdf.body(
         "Although the Scenario A/B split mitigates circular validation, the Isolation Forest "
@@ -1173,7 +1176,7 @@ def build():
         "computational validation experiments that inject realistic hardware imperfections "
         "into the simulation framework. Together they provide hardware-imperfection-aware "
         "robustness evidence for both the energy subsystem and the embedded ML layer. "
-        "Results are summarised in Figure 9."
+        "Results are summarised in Figure 10."
     )
 
     pdf.h3("5.7.1. Noise and Sensor Imperfections")
@@ -1233,7 +1236,7 @@ def build():
         "vs. 1.0 nominal), confirming that MFC biochemical variability is the dominant "
         "risk -- not hardware efficiency degradation alone. The 75.0% Monte Carlo result "
         "is a more conservative and hardware-realistic bound than the 81.5% parametric "
-        "sweep, and is adopted as the primary robustness claim of this work (Figure 9a)."
+        "sweep, and is adopted as the primary robustness claim of this work (Figure 10a)."
     )
 
     pdf.h3("5.7.4. Impact on Machine Learning Performance")
@@ -1261,7 +1264,7 @@ def build():
         "TinyML deployment practice [20]), F1 improves to 0.880 "
         "(precision = 0.831, recall = 0.935, ROC-AUC = 0.929). "
         "These values fall within the 0.88-0.91 F1 / 0.90-0.94 AUC real-world range "
-        "cited in Section 5.3 (Figure 9b-c)."
+        "cited in Section 5.3 (Figure 10b-c)."
     )
 
     pdf.h3("5.7.5. Discussion")
@@ -1288,8 +1291,8 @@ def build():
         "is structured to accept real sensor readings as calibration input once "
         "hardware becomes available."
     )
-    pdf.fig(os.path.join(FIGURES, "fig9_virtual_validation.png"),
-            "Figure 9. Virtual experimental validation results. "
+    pdf.fig(os.path.join(FIGURES, "fig10_virtual_validation.png"),
+            "Figure 10. Virtual experimental validation results. "
             "(a) Monte Carlo sustainability ratio histogram (N=200, seed=42): "
             "green bars indicate energy-positive trials (ratio >= 1.0); 75.0% of "
             "hardware-imperfection trials remain sustainable. "
