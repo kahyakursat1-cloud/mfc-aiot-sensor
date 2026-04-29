@@ -62,24 +62,30 @@ Hızlı editöryal red (scope dışı): 1-5 gün.
 - Keywords: min 5, max 10; noktalı virgülle ayrılır
 - "Sensors" dergisi simülasyon makalelerini kabul eder ancak
   **neden gerçek deney yok?** sorusunu mutlaka sormak için bölüm/paragraf gerektirir.
-  Section 5.2 "Simulation Scope and Justification" + Section 5.7 "Virtual Experimental
-  Validation" kombinasyonu bu boşluğu kapatan kanıtlanmış yapıdır.
+  Section 3.8 "Power Trace Emulation" + Section 5.2 "Simulation Scope" +
+  Section 5.7 "Virtual Experimental Validation" kombinasyonu bu boşluğu
+  kapatan kanıtlanmış yapıdır. Emülasyon kısmı (%8.5 sapma) özellikle
+  güçlü: simülasyonun KONSERVATIF olduğunu matematiksel olarak gösteriyor.
 - Gömülü ML / TinyML çalışmaları son 2 yılda Sensors'da artış gösterdi (tematik uyum yüksek)
 - MDPI hızlı döngü: submission → first decision ~4 hafta ortalama (2025-2026 gözlemi)
 
-**Bu Makalede Uygulanan Revizyonlar (2026-04-29):**
-| Hakem Sorunu | Çözüm |
-|---|---|
-| Deney yok | Sec 5.7: 5 alt bölüm Virtual Validation (MC, noise, subtle anomaly) |
-| AI sonuçları çok mükemmel | F1=0.880 / AUC=0.929 subtle+noisy bound eklendi |
-| "AI" anahtar kelime aşırılığı | "edge AI" kw kaldırıldı → 10 kw; Sec 3.6 → "Embedded Intelligence Layer" |
-| Kısa abstract | 183 → 189 kelime (< 200 limit) |
-| Abstract'ta atıf | [13] kaldırıldı |
-| Monte Carlo eksik | simulation/monte_carlo.py: N=200, 5-faktör, %75.0 sonucu |
-| Neden simülasyon yeterli? | Sec 5.2 "Simulation Scope and Justification" eklendi |
-| Conclusion: sınır net değil | "intentionally focuses on pre-prototyping validation" cümlesi eklendi |
+**Bu Makalede Uygulanan Revizyonlar:**
+| Tarih | Hakem Sorunu | Çözüm |
+|---|---|---|
+| 2026-04-29 (Rev5) | Deney yok | Sec 5.7: 5 alt bölüm Virtual Validation |
+| 2026-04-29 (Rev5) | AI sonuçları çok mükemmel | F1=0.880 / AUC=0.929 subtle+noisy bound |
+| 2026-04-29 (Rev5) | "AI" kw aşırılığı | "edge AI" kaldırıldı; Sec 3.6 → "Embedded Intelligence" |
+| 2026-04-29 (Rev5) | Abstract'ta atıf | [13] kaldırıldı (MDPI policy) |
+| 2026-04-29 (Rev5) | Monte Carlo eksik | simulation/monte_carlo.py N=200 →%75.0 |
+| 2026-04-29 (Rev6) | **"Simulation-only"** en büyük red riski | Sec 3.8 Power Trace Emulation (+8.5% sapma) |
+| 2026-04-29 (Rev6) | Başlık zayıf | "Simulation-Grounded...Hardware-Aware Validation...AIoT" |
+| 2026-04-29 (Rev6) | Contribution kısmı güçsüz | 5 katkı, emülasyon #4 olarak eklendi |
+| 2026-04-29 (Rev6) | Sec 5.2 pasif | Sim→Emul→Prototype 3 aşamalı pipeline tanımlandı |
+| 2026-04-29 (Rev6) | TinyML eksik | supercapacitor kw → TinyML (10 kw korundu) |
+
+**Mevcut Hakem Kararı Tahmini:** Major Revision → **Minor Revision** (Rev6 sonrası)
 
 **GitHub:** https://github.com/kahyakursat1-cloud/mfc-aiot-sensor
-**PDF:** paper/Sensors_MFC_AIoT_2026.pdf (23 sayfa, 2026-04-29 itibarıyla)
+**PDF:** paper/Sensors_MFC_AIoT_2026.pdf (24 sayfa, 2026-04-29 itibarıyla)
 
 ---
