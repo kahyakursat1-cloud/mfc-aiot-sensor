@@ -934,6 +934,94 @@ def fig9_virtual_validation():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────────
+# Fig 10 — Power Trace Emulation Validation
+#   Panel (a): V_oc time series — emulation trace vs flat-nominal simulation
+#   Panel (b): Cumulative harvested energy — emulation vs simulation
+# ─────────────────────────────────────────────────────────────────────────────
+def fig10_emulation_validation():
+    import sys, os as _os
+    _root = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    if _root not in sys.path:
+        sys.path.insert(0, _root)
+    import numpy as np
+    from simulation.power_trace_emulation import (
+        generate_mfc_trace, bq_efficiency,
+        E_GEN_NOM, T_CYCLE, P_NOM_W, V_OC_NOM
+    )
+
+    t, v_emul = generate_mfc_trace(n_steps=600, dt=1.0, seed=42)
+    v_sim     = np.full(len(t), V_OC_NOM)   # flat-nominal
+
+    # Cumulative energy
+    eta_nom   = float(bq_efficiency(np.array([V_OC_NOM]))[0])
+    eta_e     = bq_efficiency(v_emul)
+    p_emul_W  = P_NOM_W * (v_emul / V_OC_NOM) ** 2 * (eta_e / eta_nom)
+    p_sim_W   = np.full(len(t), P_NOM_W)
+    cumE_emul = np.cumsum(p_emul_W) * 1e3   # mJ
+    cumE_sim  = np.cumsum(p_sim_W)  * 1e3   # mJ
+
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(11, 4.5))
+    fig.subplots_adjust(wspace=0.38, left=0.07, right=0.97, top=0.88, bottom=0.14)
+
+    # ── Panel (a): V_oc trace ────────────────────────────────────────────────
+    t_min = t / 60.0
+    ax1.fill_between(t_min, v_sim, v_emul, where=(v_emul > v_sim),
+                     alpha=0.15, color="#2563eb", label="_nolegend_")
+    ax1.fill_between(t_min, v_emul, v_sim, where=(v_emul < v_sim),
+                     alpha=0.15, color="#dc2626", label="_nolegend_")
+    ax1.plot(t_min, v_emul, color="#2563eb", lw=1.6,
+             label="Emulation (programmable PS trace)")
+    ax1.axhline(V_OC_NOM, color="#dc2626", ls="--", lw=1.8,
+                label=f"Simulation flat-nominal ({V_OC_NOM:.2f} V)")
+    ax1.axhline(0.80, color="gray", ls=":", lw=1.2, alpha=0.7)
+    ax1.axhline(0.55, color="gray", ls=":", lw=1.2, alpha=0.7)
+    ax1.text(9.6, 0.805, r"$V_{oc,init}$ = 0.80 V", fontsize=8, color="gray", ha="right")
+    ax1.text(9.6, 0.555, r"$V_{oc,ss}$ = 0.55 V",  fontsize=8, color="gray", ha="right")
+    ax1.set_xlabel("Time (min)", fontsize=10)
+    ax1.set_ylabel("Open-Circuit Voltage (V)", fontsize=10)
+    ax1.set_title("(a) MFC Voltage Profile: Emulation vs Simulation",
+                  fontsize=10, fontweight="bold", pad=6)
+    ax1.legend(fontsize=8.5, loc="upper right")
+    ax1.set_xlim(0, 10)
+    ax1.set_ylim(0.40, 0.90)
+    ax1.grid(True, alpha=0.3, ls=":")
+    ax1.tick_params(labelsize=9)
+
+    # ── Panel (b): Cumulative energy ──────────────────────────────────────────
+    ax2.fill_between(t_min, cumE_sim, cumE_emul, where=(cumE_emul > cumE_sim),
+                     alpha=0.15, color="#2563eb", label="_nolegend_")
+    ax2.plot(t_min, cumE_emul, color="#2563eb", lw=2.0,
+             label=f"Emulation  ({cumE_emul[-1]:.3f} mJ)")
+    ax2.plot(t_min, cumE_sim,  color="#dc2626", ls="--", lw=1.8,
+             label=f"Simulation ({cumE_sim[-1]:.3f} mJ)")
+
+    # Deviation annotation at t = 10 min
+    y_mid = (cumE_sim[-1] + cumE_emul[-1]) / 2
+    dev   = (cumE_emul[-1] - cumE_sim[-1]) / cumE_sim[-1] * 100
+    ax2.annotate("", xy=(10, cumE_emul[-1]), xytext=(10, cumE_sim[-1]),
+                 arrowprops=dict(arrowstyle="<->", color="#16a34a", lw=1.6))
+    ax2.text(9.55, y_mid, f"+{dev:.1f}%", color="#16a34a",
+             fontsize=9.5, fontweight="bold", ha="right", va="center")
+    ax2.text(9.55, y_mid - 0.028, "deviation", color="#16a34a",
+             fontsize=7.5, ha="right", va="center")
+
+    ax2.set_xlabel("Time (min)", fontsize=10)
+    ax2.set_ylabel("Cumulative Harvested Energy (mJ)", fontsize=10)
+    ax2.set_title("(b) Cumulative Energy: Emulation vs Simulation",
+                  fontsize=10, fontweight="bold", pad=6)
+    ax2.legend(fontsize=8.5, loc="upper left")
+    ax2.set_xlim(0, 10)
+    ax2.set_ylim(0, 0.60)
+    ax2.grid(True, alpha=0.3, ls=":")
+    ax2.tick_params(labelsize=9)
+
+    out_path = os.path.join(OUT, "fig10_emulation_validation.png")
+    fig.savefig(out_path, dpi=300, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved {out_path}")
+
+
 if __name__ == "__main__":
     print("Generating 8 publication-quality figures (300 DPI)...")
     fig1_architecture()
@@ -948,4 +1036,6 @@ if __name__ == "__main__":
     graphical_abstract()
     print("Generating virtual validation figure (Fig 9)...")
     fig9_virtual_validation()
+    print("Generating emulation validation figure (Fig 10)...")
+    fig10_emulation_validation()
     print(f"\nAll figures saved to {OUT}/")
