@@ -1,0 +1,87 @@
+26 April 2026
+
+Editorial Office
+MDPI Sensors
+sensors@mdpi.com
+
+Dear Editor-in-Chief,
+
+We are pleased to submit our manuscript entitled:
+
+"A Simulation-Grounded Virtual Prototyping Framework for MFC-Powered AIoT
+Environmental Sensor Nodes with Embedded Anomaly Detection"
+
+for consideration as a Research Article in MDPI Sensors.
+
+SCOPE FIT
+This work sits at the intersection of the three application domains most
+active in Sensors: energy-harvesting IoT hardware, embedded machine
+learning (TinyML), and precision agriculture sensing. The manuscript
+addresses the critical open problem of reliable pre-prototyping design
+for battery-free sensor nodes -- a barrier that prevents the wider
+adoption of microbial fuel cell (MFC) energy harvesting in field-deployed
+WSN systems.
+
+PRINCIPAL CONTRIBUTIONS
+1. We present, to our knowledge, the first Simulation-Emulation-Prototype
+   validation pipeline for MFC-powered AIoT nodes. A literature-calibrated
+   substrate-depletion OCV emulation model bounds the energy simulation
+   within a cross-study fidelity envelope of [-1.6%, +8.5%] MAPE,
+   validated independently against Zhang et al. (Int. J. Mol. Sci. 2016).
+   This directly addresses the simulation-only limitation that has
+   historically restricted acceptance of pre-prototyping IoT studies.
+
+2. An unsupervised Isolation Forest anomaly detector achieves
+   F1 = 0.955 +/- 0.022 (5-fold CV, n = 50/class) without labelled
+   training data; under realistic sensor noise and electrode drift,
+   F1 = 0.880 and ROC-AUC = 0.929 -- bounds derived from four independent
+   virtual validation experiments (Sec 5.7).
+
+3. A compact Random Forest duty-cycle decision model reduces average
+   energy consumption by 47.5% vs. a fixed-interval baseline, enabling
+   self-sustaining operation within the MFC power envelope (<200 uW mean).
+
+4. A 200-trial Monte Carlo simulation with hardware imperfections confirms
+   75.0% energy-positive operation -- a conservative, hardware-realistic
+   bound compared to the 81.5% parametric sweep.
+
+NOVELTY RELATIVE TO PRIOR ART
+The closest prior works -- Zheng et al. (Sensors 2015) and Zhang et al.
+(IJMS 2016) -- demonstrated MFC-powered wireless sensing but used fixed
+duty cycles with no embedded ML or adaptive control. Donovan et al.
+(IEEE TPEL 2011) introduced programmable power supply MFC emulation for
+testbed evaluation but without edge intelligence. This manuscript
+integrates all three dimensions (energy harvesting, adaptive control, and
+embedded anomaly detection) within a single reproducible framework, and
+is the first to provide cross-study emulation fidelity evidence for
+MFC-powered AIoT nodes.
+
+SIMULATION-ONLY JUSTIFICATION
+Stable soil MFC biofilm formation requires 2-6 weeks of in-situ
+conditioning, making iterative pre-prototyping experiments impractical
+at the design stage. The framework is explicitly positioned as a
+pre-prototyping tool with a structured path to hardware validation;
+physical benchtop construction using the fully described $40/node BOM
+is identified as the immediate next step. All simulation parameters are
+calibrated from peer-reviewed experimental measurements [1,3,5,6,11,25,26],
+and the cross-study MAPE envelope confirms that the models accurately
+reproduce the energetic dynamics of independent physical MFC systems.
+
+OPEN SCIENCE
+All source code, simulation scripts, and figure generation code are
+available at: https://github.com/kahyakursat1-cloud/mfc-aiot-sensor
+This enables full reproducibility and adaptation to alternative MFC
+chemistries, sensor configurations, or communication protocols.
+
+This manuscript has not been submitted to or published in any other
+journal. All authors have approved the submission. There are no
+conflicts of interest to declare.
+
+We believe this work makes a meaningful contribution to the Sensors
+community and look forward to the editorial assessment.
+
+Yours sincerely,
+
+Kursat Kahya
+Cukurova Science and Art Center, Adana, Türkiye
+kahyakursat1@gmail.com
