@@ -64,8 +64,10 @@ Hızlı editöryal red (scope dışı): 1-5 gün.
   **neden gerçek deney yok?** sorusunu mutlaka sormak için bölüm/paragraf gerektirir.
   Section 3.8 "Power Trace Emulation" + Section 5.2 "Simulation Scope" +
   Section 5.7 "Virtual Experimental Validation" kombinasyonu bu boşluğu
-  kapatan kanıtlanmış yapıdır. Emülasyon kısmı (%8.5 sapma) özellikle
-  güçlü: simülasyonun KONSERVATIF olduğunu matematiksel olarak gösteriyor.
+  kapatan kanıtlanmış yapıdır. Emülasyon kısmı (MAPE [-1.6%, +8.5%]
+  cross-study fidelity envelope) özellikle güçlü: Zhang [11] bağımsız
+  parametresiyle -1.6% MAPE, simülasyonun gerçek dünya fiziksel dinamikleri
+  doğrultusunda yapısal olarak doğru olduğunu gösteriyor.
 - Gömülü ML / TinyML çalışmaları son 2 yılda Sensors'da artış gösterdi (tematik uyum yüksek)
 - MDPI hızlı döngü: submission → first decision ~4 hafta ortalama (2025-2026 gözlemi)
 
@@ -82,10 +84,16 @@ Hızlı editöryal red (scope dışı): 1-5 gün.
 | 2026-04-29 (Rev6) | Contribution kısmı güçsüz | 5 katkı, emülasyon #4 olarak eklendi |
 | 2026-04-29 (Rev6) | Sec 5.2 pasif | Sim→Emul→Prototype 3 aşamalı pipeline tanımlandı |
 | 2026-04-29 (Rev6) | TinyML eksik | supercapacitor kw → TinyML (10 kw korundu) |
+| 2026-04-29 (Rev7c) | Figür sıralaması hatalı | Fig 6↔7 swap + Fig 10 emülasyon Sec 5.2'ye taşındı |
+| 2026-04-29 (Rev7d) | Cross-dataset doğrulama eksik | Sec 5.7.5: literature-ref KS+Cohen'd+ROC=0.999 |
+| 2026-04-29 (Rev7e) | Zhang [11] entegrasyonu | Sec 3.8: Zhang cross-study MAPE=-1.6%; başlık Virtual Prototyping |
+| 2026-04-29 (Rev7f) | Overfitting algısı riski | Sec 3.8: parametrik enjeksiyon → structural validity açıklaması |
+| 2026-04-29 (Rev7g) | Abstract–başlık tutarsızlığı | "co-design"→"virtual prototyping" (3 yerde); cross-study+F1=0.880 abstract'a eklendi |
 
-**Mevcut Hakem Kararı Tahmini:** Major Revision → **Minor Revision** (Rev6 sonrası)
+**Mevcut Hakem Kararı Tahmini:** Major Revision → **Minor Revision** (Rev7g sonrası — hakem skoru 33/40)
+**Submission Durumu:** ✅ GÖNDERİME HAZIR (Rev7g)
 
 **GitHub:** https://github.com/kahyakursat1-cloud/mfc-aiot-sensor
-**PDF:** paper/Sensors_MFC_AIoT_2026.pdf (24 sayfa, 2026-04-29 itibarıyla)
+**PDF:** paper/Sensors_MFC_AIoT_2026.pdf (26 sayfa, Rev7g — 2026-04-29)
 
 ---
