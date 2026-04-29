@@ -293,7 +293,7 @@ def build():
         "All MFC electrical parameters are calibrated from peer-reviewed experimental literature. "
         "The architecture integrates an MFC (0.3-0.8 V OCV), a 1 F supercapacitor, an ESP32 "
         "in 10-minute deep-sleep duty cycles, and a LoRa Ra-02 433 MHz link. "
-        "An Isolation Forest [13] provides unsupervised anomaly detection; "
+        "An Isolation Forest algorithm provides unsupervised anomaly detection; "
         "an adaptive decision model manages duty-cycle allocation based on energy state. "
         "Independent parameter sets (Scenarios A and B) prevent circular validation. "
         "The adaptive strategy reduces energy consumption by 47.5% versus always-transmit "
@@ -314,7 +314,7 @@ def build():
     pdf.set_font("Helvetica", size=10)
     pdf.write(5,
         "microbial fuel cell; energy harvesting; IoT; anomaly detection; LoRa; "
-        "Isolation Forest; edge AI; environmental monitoring; ESP32; supercapacitor; "
+        "Isolation Forest; environmental monitoring; ESP32; supercapacitor; "
         "precision agriculture")
     pdf.ln(8)
 
