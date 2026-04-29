@@ -743,7 +743,14 @@ def build():
         "lower bound. The flat-nominal simulation (0.480 mJ) falls within this "
         "[-1.6%, +8.5%] cross-study fidelity envelope, confirming that the design-space "
         "predictions of Section 4.2 are robust to literature-sourced parameter variation "
-        "(simulation/power_trace_emulation.py, function zhang_scenario_validation())."
+        "(simulation/power_trace_emulation.py, function zhang_scenario_validation()). "
+        "The near-unity fidelity of the Zhang scenario does not reflect parameter "
+        "optimisation or overfitting: the three Zhang parameters (V_oc_init, V_oc_ss, tau) "
+        "are injected directly from their reported electrochemical values without any "
+        "post-hoc adjustment to the energy model. The close agreement therefore "
+        "demonstrates that the emulation framework's substrate-depletion OCV formulation "
+        "accurately captures the physical dynamics of an independent terrestrial MFC system, "
+        "confirming the model's structural validity rather than its numerical calibration."
     )
 
     # ── SECTION 4: RESULTS ──────────────────────────────────────────────────
