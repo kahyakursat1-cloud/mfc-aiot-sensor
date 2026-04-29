@@ -264,7 +264,7 @@ def build():
     pdf.set_text_color(100, 100, 100)
     pdf.set_font("Helvetica", "I", 9)
     pdf.multi_cell(0, 5,
-        "1  BİLSEM Aerospace and UAV Programme, Türkiye\n"
+        "1  Cukurova Science and Art Center, Adana, Türkiye\n"
         "*  Correspondence: kahyakursat1@gmail.com",
         align="C")
     pdf.set_text_color(0, 0, 0)
