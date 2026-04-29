@@ -1001,10 +1001,12 @@ def fig10_emulation_validation():
     dev   = (cumE_emul[-1] - cumE_sim[-1]) / cumE_sim[-1] * 100
     ax2.annotate("", xy=(10, cumE_emul[-1]), xytext=(10, cumE_sim[-1]),
                  arrowprops=dict(arrowstyle="<->", color="#16a34a", lw=1.6))
-    ax2.text(9.55, y_mid, f"+{dev:.1f}%", color="#16a34a",
+    ax2.text(9.55, y_mid + 0.012, f"+{dev:.1f}%", color="#16a34a",
              fontsize=9.5, fontweight="bold", ha="right", va="center")
-    ax2.text(9.55, y_mid - 0.028, "deviation", color="#16a34a",
-             fontsize=7.5, ha="right", va="center")
+    ax2.text(9.55, y_mid - 0.018, "MAPE", color="#16a34a",
+             fontsize=8.0, fontweight="bold", ha="right", va="center")
+    ax2.text(9.55, y_mid - 0.045, "(sim. vs emul.)", color="#16a34a",
+             fontsize=7.0, ha="right", va="center")
 
     ax2.set_xlabel("Time (min)", fontsize=10)
     ax2.set_ylabel("Cumulative Harvested Energy (mJ)", fontsize=10)
