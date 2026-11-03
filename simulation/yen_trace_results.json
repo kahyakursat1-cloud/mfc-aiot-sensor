@@ -1,0 +1,352 @@
+{
+ "source": "Yen et al. v3 cells (v0-v2), 2 kOhm load, 5-min mean, gaps = 0",
+ "file": "Data/design_iterations/v3_Data.csv",
+ "start": "2022-11-24 17:05:00",
+ "end": "2023-05-04 18:15:00",
+ "days": 161,
+ "step_s": 300,
+ "wake_h": 2.26,
+ "gap_fraction": 0.03257659056119699,
+ "gap_days": 5.246527777777778,
+ "longest_gap_days": 1.9236111111111112,
+ "cell_mean_uW": 41.68010890251366,
+ "cell_median_uW": 22.979975441666664,
+ "daily_cell_uW": {
+  "median": 22.988671896681133,
+  "p5": 0.0006744459597800955,
+  "p95": 205.56630317821927
+ },
+ "days_below_5uW": 37,
+ "longest_run_below_5uW_days": 12,
+ "days_below_15uW": 58,
+ "days_all_cells_below_5uW": 29,
+ "cell_daily_corr": {
+  "min": 0.9218583796863764,
+  "max": 0.9656120180963184
+ },
+ "array10_daily_cv": 1.4132082258310088,
+ "runs": [
+  {
+   "availability": 0.7636202919172973,
+   "outages": 29,
+   "longest_outage_days": 12.552083333333334,
+   "tx_total": 951,
+   "tx_per_day_mean": 5.90504937260144,
+   "report_ratio": 0.5560588159199689,
+   "days_without_tx": 67,
+   "days": 161,
+   "counts": {
+    "transmit": 951,
+    "measure": 184,
+    "sleep": 191
+   },
+   "n_cells": 10,
+   "c_eq": 0.5,
+   "mean_array_uW": 312.60081676885244,
+   "eq7_interval_at_mean_h": 0.862068146039236
+  },
+  {
+   "availability": 0.857318414074122,
+   "outages": 6,
+   "longest_outage_days": 9.38888888888889,
+   "tx_total": 871,
+   "tx_per_day_mean": 5.408304945884179,
+   "report_ratio": 0.5092820490707601,
+   "days_without_tx": 76,
+   "days": 161,
+   "counts": {
+    "transmit": 871,
+    "measure": 305,
+    "sleep": 294
+   },
+   "n_cells": 10,
+   "c_eq": 5.0,
+   "mean_array_uW": 312.60081676885244,
+   "eq7_interval_at_mean_h": 0.862068146039236
+  },
+  {
+   "availability": 0.8008537610762564,
+   "outages": 19,
+   "longest_outage_days": 11.177083333333334,
+   "tx_total": 1195,
+   "tx_per_day_mean": 7.420119874089086,
+   "report_ratio": 0.6987279548100556,
+   "days_without_tx": 43,
+   "days": 161,
+   "counts": {
+    "transmit": 1195,
+    "measure": 90,
+    "sleep": 96
+   },
+   "n_cells": 20,
+   "c_eq": 0.5,
+   "mean_array_uW": 625.2016335377049,
+   "eq7_interval_at_mean_h": 0.3939728847729223
+  },
+  {
+   "availability": 0.898411055774745,
+   "outages": 4,
+   "longest_outage_days": 7.649305555555555,
+   "tx_total": 1180,
+   "tx_per_day_mean": 7.3269802940796,
+   "report_ratio": 0.6899573110258289,
+   "days_without_tx": 45,
+   "days": 161,
+   "counts": {
+    "transmit": 1180,
+    "measure": 176,
+    "sleep": 182
+   },
+   "n_cells": 20,
+   "c_eq": 5.0,
+   "mean_array_uW": 625.2016335377049,
+   "eq7_interval_at_mean_h": 0.3939728847729223
+  },
+  {
+   "availability": 0.8304551236444387,
+   "outages": 24,
+   "longest_outage_days": 9.590277777777779,
+   "tx_total": 1305,
+   "tx_per_day_mean": 8.10314346082532,
+   "report_ratio": 0.7630460092277176,
+   "days_without_tx": 34,
+   "days": 161,
+   "counts": {
+    "transmit": 1305,
+    "measure": 47,
+    "sleep": 82
+   },
+   "n_cells": 40,
+   "c_eq": 0.5,
+   "mean_array_uW": 1250.4032670754098,
+   "eq7_interval_at_mean_h": 0.18886686342830222
+  },
+  {
+   "availability": 0.9254899424358062,
+   "outages": 5,
+   "longest_outage_days": 5.878472222222222,
+   "tx_total": 1314,
+   "tx_per_day_mean": 8.159027208831011,
+   "report_ratio": 0.7683083954982536,
+   "days_without_tx": 34,
+   "days": 161,
+   "counts": {
+    "transmit": 1314,
+    "measure": 111,
+    "sleep": 159
+   },
+   "n_cells": 40,
+   "c_eq": 5.0,
+   "mean_array_uW": 1250.4032670754098,
+   "eq7_interval_at_mean_h": 0.18886686342830222
+  }
+ ],
+ "sensitivity": [
+  {
+   "availability": 0.7636202919172973,
+   "outages": 29,
+   "longest_outage_days": 12.552083333333334,
+   "tx_total": 951,
+   "tx_per_day_mean": 5.90504937260144,
+   "report_ratio": 0.5560588159199689,
+   "days_without_tx": 67,
+   "days": 161,
+   "counts": {
+    "transmit": 951,
+    "measure": 184,
+    "sleep": 191
+   },
+   "label": "baseline",
+   "c_eq": 0.5,
+   "pleak_uW": 5.0
+  },
+  {
+   "availability": 0.7899877110148115,
+   "outages": 25,
+   "longest_outage_days": 12.45138888888889,
+   "tx_total": 1009,
+   "tx_per_day_mean": 6.265189081971454,
+   "report_ratio": 0.5899719718856452,
+   "days_without_tx": 63,
+   "days": 161,
+   "counts": {
+    "transmit": 1009,
+    "measure": 178,
+    "sleep": 184
+   },
+   "label": "gaps interpolated",
+   "c_eq": 0.5,
+   "pleak_uW": 5.0
+  },
+  {
+   "availability": 0.857318414074122,
+   "outages": 6,
+   "longest_outage_days": 9.38888888888889,
+   "tx_total": 871,
+   "tx_per_day_mean": 5.408304945884179,
+   "report_ratio": 0.5092820490707601,
+   "days_without_tx": 76,
+   "days": 161,
+   "counts": {
+    "transmit": 871,
+    "measure": 305,
+    "sleep": 294
+   },
+   "label": "5 F, leakage fixed",
+   "c_eq": 5.0,
+   "pleak_uW": 5.0
+  },
+  {
+   "availability": 0.8619106138024707,
+   "outages": 5,
+   "longest_outage_days": 9.333333333333334,
+   "tx_total": 967,
+   "tx_per_day_mean": 6.004398257944892,
+   "report_ratio": 0.5654141692898106,
+   "days_without_tx": 67,
+   "days": 161,
+   "counts": {
+    "transmit": 967,
+    "measure": 250,
+    "sleep": 260
+   },
+   "label": "5 F, gaps interpolated",
+   "c_eq": 5.0,
+   "pleak_uW": 5.0
+  },
+  {
+   "availability": 0.7549964426621822,
+   "outages": 10,
+   "longest_outage_days": 13.725694444444445,
+   "tx_total": 917,
+   "tx_per_day_mean": 5.693932991246604,
+   "report_ratio": 0.5361786900090552,
+   "days_without_tx": 71,
+   "days": 161,
+   "counts": {
+    "transmit": 917,
+    "measure": 206,
+    "sleep": 174
+   },
+   "label": "1 F, leakage scaled",
+   "c_eq": 1.0,
+   "pleak_uW": 10.0
+  },
+  {
+   "availability": 0.7275510424077787,
+   "outages": 6,
+   "longest_outage_days": 15.590277777777779,
+   "tx_total": 832,
+   "tx_per_day_mean": 5.166142037859514,
+   "report_ratio": 0.4864783752317709,
+   "days_without_tx": 79,
+   "days": 161,
+   "counts": {
+    "transmit": 832,
+    "measure": 261,
+    "sleep": 154
+   },
+   "label": "2 F, leakage scaled",
+   "c_eq": 2.0,
+   "pleak_uW": 20.0
+  },
+  {
+   "availability": 0.6245391630554298,
+   "outages": 5,
+   "longest_outage_days": 21.01736111111111,
+   "tx_total": 487,
+   "tx_per_day_mean": 3.023931697641326,
+   "report_ratio": 0.2847535681945582,
+   "days_without_tx": 113,
+   "days": 161,
+   "counts": {
+    "transmit": 487,
+    "measure": 418,
+    "sleep": 166
+   },
+   "label": "5 F, leakage scaled",
+   "c_eq": 5.0,
+   "pleak_uW": 50.0
+  }
+ ],
+ "policies": [
+  {
+   "policy": "Algorithm 2 thresholds",
+   "0.5 F, 5 uW": {
+    "availability": 0.7636202919172973,
+    "report_ratio": 0.5560588159199689,
+    "outages": 29
+   },
+   "5 F, 5 uW": {
+    "availability": 0.857318414074122,
+    "report_ratio": 0.5092820490707601,
+    "outages": 6
+   },
+   "5 F, 50 uW": {
+    "availability": 0.6245391630554298,
+    "report_ratio": 0.2847535681945582,
+    "outages": 5
+   }
+  },
+  {
+   "policy": "Defer measurement",
+   "0.5 F, 5 uW": {
+    "availability": 0.7727615721277192,
+    "report_ratio": 0.6507817687896166,
+    "outages": 26
+   },
+   "5 F, 5 uW": {
+    "availability": 0.8902830778517992,
+    "report_ratio": 0.6320710620499331,
+    "outages": 5
+   },
+   "5 F, 50 uW": {
+    "availability": 0.6458831899618395,
+    "report_ratio": 0.48940192315984643,
+    "outages": 5
+   }
+  },
+  {
+   "policy": "Energy reserve 1 J",
+   "0.5 F, 5 uW": {
+    "availability": 0.7727615721277192,
+    "report_ratio": 0.6507817687896166,
+    "outages": 26
+   },
+   "5 F, 5 uW": {
+    "availability": 0.8263372356251213,
+    "report_ratio": 0.7191927903065843,
+    "outages": 5
+   },
+   "5 F, 50 uW": {
+    "availability": 0.5973309186555419,
+    "report_ratio": 0.5519658488206631,
+    "outages": 7
+   }
+  },
+  {
+   "policy": "Greedy (one event stored)",
+   "0.5 F, 5 uW": {
+    "availability": 0.7643101998577065,
+    "report_ratio": 0.6607218317450735,
+    "outages": 28
+   },
+   "5 F, 5 uW": {
+    "availability": 0.8067179785697346,
+    "report_ratio": 0.7314716916045017,
+    "outages": 10
+   },
+   "5 F, 50 uW": {
+    "availability": 0.5899575275424186,
+    "report_ratio": 0.5578129446768142,
+    "outages": 7
+   }
+  }
+ ],
+ "ablation": {
+  "A_mean_harvest_event_energy": 1.0,
+  "B_plus_floor_and_losses": 1.0,
+  "C_plus_finite_storage_greedy": 0.6607218317450735,
+  "D_plus_algorithm2": 0.5560588159199689
+ }
+}
